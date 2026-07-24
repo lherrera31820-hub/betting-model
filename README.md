@@ -10,7 +10,7 @@ See `DEPLOYMENT_GUIDE.md` for the full setup walkthrough.
 | File | Purpose |
 |---|---|
 | `requirements.txt` | Python dependencies |
-| `main.py` | Pulls games/odds from SportsDataIO, upserts into Postgres |
+| `main.py` | Pulls games/odds from SportsDataIO (primary) and, if `ODDS_API_KEY` is set, supplementary odds from The Odds API; upserts into Postgres |
 | `database_setup.py` | Creates schema; also runs a `--test` connectivity check |
 | `.github/workflows/betting_workflow.yml` | GitHub Actions workflow (manual + scheduled) |
 | `.env.example` | Template for local environment variables (never commit real `.env`) |

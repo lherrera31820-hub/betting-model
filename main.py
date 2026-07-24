@@ -19,6 +19,7 @@ import sys
 import argparse
 import time
 import json
+import difflib
 from datetime import date, datetime, timezone
 
 import requests
@@ -35,6 +36,18 @@ SPORT_HOSTS = {
     "ncaab": "https://api.sportsdata.io/v3/cbb",
 }
 
+# The Odds API (https://the-odds-api.com) uses its own sport keys.
+# Used as a SECOND, optional odds source alongside SportsDataIO — not a
+# replacement. Only the sports also covered by SPORT_HOSTS are mapped here.
+ODDS_API_SPORT_KEYS = {
+    "nfl": "americanfootball_nfl",
+    "mlb": "baseball_mlb",
+    "nba": "basketball_nba",
+    "ncaaf": "americanfootball_ncaaf",
+    "ncaab": "basketball_ncaab",
+}
+ODDS_API_BASE = "https://api.the-odds-api.com/v4"
+
 REQUEST_TIMEOUT = 20
 MAX_RETRIES = 3
 
@@ -45,6 +58,11 @@ def get_api_key() -> str:
         print("ERROR: SPORTSDATAIO_API_KEY environment variable is not set.", file=sys.stderr)
         sys.exit(1)
     return key
+
+
+def get_odds_api_key() -> str | None:
+    """Optional. If not set, the Odds API step is skipped (SportsDataIO odds still run)."""
+    return os.environ.get("ODDS_API_KEY")
 
 
 def get_db_connection():
@@ -140,6 +158,7 @@ def upsert_games(cur, sport_key: str, games: list):
 
 
 def upsert_odds(cur, odds_payload: list):
+    """SportsDataIO odds (primary source)."""
     if not odds_payload:
         return 0
     rows = []
@@ -157,6 +176,7 @@ def upsert_odds(cur, odds_payload: list):
                 line.get("OverUnder"),
                 line.get("OverPayout"),
                 line.get("UnderPayout"),
+                "sportsdataio",
             ))
     if not rows:
         return 0
@@ -165,13 +185,143 @@ def upsert_odds(cur, odds_payload: list):
         """
         INSERT INTO odds (
             game_id, sportsbook, market_type, home_line, away_line,
-            home_price, away_price, total_points, over_price, under_price
+            home_price, away_price, total_points, over_price, under_price, data_source
         )
         VALUES %s;
         """,
         rows,
     )
     return len(rows)
+
+
+def _normalize_name(name: str) -> str:
+    return (name or "").lower().replace(".", "").strip()
+
+
+def _names_match(db_name: str, api_name: str) -> bool:
+    a, b = _normalize_name(db_name), _normalize_name(api_name)
+    if not a or not b:
+        return False
+    if a in b or b in a:
+        return True
+    return difflib.SequenceMatcher(None, a, b).ratio() > 0.6
+
+
+def match_game_id(cur, sport_key: str, home_team_name: str, away_team_name: str, commence_time: str):
+    """The Odds API doesn't share game IDs with SportsDataIO, so games are
+    matched by team name + date against what SportsDataIO already inserted
+    for this same run."""
+    game_date = (commence_time or "")[:10]
+    if not game_date:
+        return None
+    cur.execute(
+        """
+        SELECT g.game_id, ht.full_name, at.full_name
+        FROM games g
+        JOIN leagues l ON g.league_id = l.league_id
+        JOIN teams ht ON g.home_team_id = ht.team_id
+        JOIN teams at ON g.away_team_id = at.team_id
+        WHERE l.sport_key = %s AND g.game_date::date = %s::date;
+        """,
+        (sport_key, game_date),
+    )
+    for game_id, home_full, away_full in cur.fetchall():
+        if _names_match(home_full, home_team_name) and _names_match(away_full, away_team_name):
+            return game_id
+    return None
+
+
+def upsert_odds_from_oddsapi(cur, sport_key: str, events: list):
+    """The Odds API odds (secondary/supplementary source). Requires games to
+    already be inserted for this date via SportsDataIO in the same run."""
+    if not events:
+        return 0
+    rows = []
+    unmatched = 0
+    for event in events:
+        home_team = event.get("home_team")
+        away_team = event.get("away_team")
+        game_id = match_game_id(cur, sport_key, home_team, away_team, event.get("commence_time"))
+        if game_id is None:
+            unmatched += 1
+            continue
+        for bookmaker in event.get("bookmakers", []):
+            home_line = away_line = home_price = away_price = None
+            total_points = over_price = under_price = None
+            for market in bookmaker.get("markets", []):
+                key = market.get("key")
+                outcomes = market.get("outcomes", [])
+                if key == "h2h":
+                    for o in outcomes:
+                        if o.get("name") == home_team:
+                            home_price = o.get("price")
+                        elif o.get("name") == away_team:
+                            away_price = o.get("price")
+                elif key == "spreads":
+                    for o in outcomes:
+                        if o.get("name") == home_team:
+                            home_line = o.get("point")
+                        elif o.get("name") == away_team:
+                            away_line = o.get("point")
+                elif key == "totals":
+                    for o in outcomes:
+                        if o.get("name") == "Over":
+                            total_points = o.get("point")
+                            over_price = o.get("price")
+                        elif o.get("name") == "Under":
+                            under_price = o.get("price")
+            rows.append((
+                game_id,
+                bookmaker.get("title"),
+                "spread_moneyline_total",
+                home_line, away_line, home_price, away_price,
+                total_points, over_price, under_price,
+                "theoddsapi",
+            ))
+    if unmatched:
+        print(f"  [odds api] {unmatched} event(s) could not be matched to a SportsDataIO game and were skipped")
+    if not rows:
+        return 0
+    execute_values(
+        cur,
+        """
+        INSERT INTO odds (
+            game_id, sportsbook, market_type, home_line, away_line,
+            home_price, away_price, total_points, over_price, under_price, data_source
+        )
+        VALUES %s;
+        """,
+        rows,
+    )
+    return len(rows)
+
+
+def fetch_oddsapi_events(sport_key: str, odds_api_key: str) -> list:
+    the_odds_api_sport = ODDS_API_SPORT_KEYS.get(sport_key)
+    if not the_odds_api_sport:
+        print(f"  [odds api] no Odds API mapping for sport '{sport_key}', skipping")
+        return []
+    url = f"{ODDS_API_BASE}/sports/{the_odds_api_sport}/odds"
+    params = {
+        "apiKey": odds_api_key,
+        "regions": "us",
+        "markets": "h2h,spreads,totals",
+        "oddsFormat": "american",
+        "dateFormat": "iso",
+    }
+    last_error = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            resp = requests.get(url, params=params, timeout=REQUEST_TIMEOUT)
+            if resp.status_code == 200:
+                return resp.json()
+            last_error = f"HTTP {resp.status_code}: {resp.text[:300]}"
+        except requests.RequestException as exc:
+            last_error = str(exc)
+        print(f"  [odds api] attempt {attempt}/{MAX_RETRIES} failed: {last_error}")
+        time.sleep(2 * attempt)
+    print(f"  [odds api] giving up after {MAX_RETRIES} attempts: {last_error}")
+    return []
 
 
 def log_run(cur, sport_key: str, run_date: str, rows_upserted: int, status: str, error_message: str = None):
@@ -208,9 +358,17 @@ def run(sport: str, target_date: str):
                 games = fetch_json(f"{base_url}/scores/json/ScoresByDate/{target_date}", api_key)
                 rows_upserted += upsert_games(cur, sport, games)
 
-                print("  fetching odds...")
+                print("  fetching odds (SportsDataIO)...")
                 odds = fetch_json(f"{base_url}/odds/json/GameOddsByDate/{target_date}", api_key)
                 rows_upserted += upsert_odds(cur, odds)
+
+                odds_api_key = get_odds_api_key()
+                if odds_api_key:
+                    print("  fetching odds (The Odds API)...")
+                    events = fetch_oddsapi_events(sport, odds_api_key)
+                    rows_upserted += upsert_odds_from_oddsapi(cur, sport, events)
+                else:
+                    print("  ODDS_API_KEY not set, skipping The Odds API step")
 
                 log_run(cur, sport, target_date, rows_upserted, "success")
 

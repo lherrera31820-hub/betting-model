@@ -118,9 +118,14 @@ SCHEMA_STATEMENTS = [
     ON CONFLICT (sport_key) DO NOTHING;
     """,
 
+    # Tags each odds row by where it came from (SportsDataIO is the primary
+    # feed; The Odds API is an optional, additive secondary feed).
+    "ALTER TABLE odds ADD COLUMN IF NOT EXISTS data_source TEXT NOT NULL DEFAULT 'sportsdataio';",
+
     # Helpful indexes
     "CREATE INDEX IF NOT EXISTS idx_games_date ON games (game_date);",
     "CREATE INDEX IF NOT EXISTS idx_odds_game ON odds (game_id);",
+    "CREATE INDEX IF NOT EXISTS idx_odds_source ON odds (data_source);",
     "CREATE INDEX IF NOT EXISTS idx_predictions_game ON predictions (game_id);",
 ]
 

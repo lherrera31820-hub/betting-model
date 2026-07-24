@@ -101,7 +101,8 @@ hard-code API keys or database URLs in the YAML or Python files.
 | Secret name | Value |
 |---|---|
 | `DATABASE_URL` | Full Postgres connection string, e.g. `postgresql://user:pass@host:5432/dbname` |
-| `SPORTSDATAIO_API_KEY` | Your SportsDataIO subscription key |
+| `SPORTSDATAIO_API_KEY` | Your SportsDataIO subscription key (primary data source) |
+| `ODDS_API_KEY` | Your [The Odds API](https://the-odds-api.com) key (optional, supplementary odds source — the workflow runs fine without it, it just skips that step) |
 
 3. Click **Add secret** after each one. Secrets are write-only after saving —
    you can update them later but not view the value again.
@@ -189,6 +190,11 @@ LIMIT 5;
 ```
 A `success` row with `rows_upserted > 0` confirms both the SportsDataIO
 fetch and the database write worked end to end.
+
+To see the split between sources once both are wired up:
+```sql
+SELECT data_source, count(*) FROM odds GROUP BY data_source;
+```
 
 ---
 
