@@ -1,0 +1,68 @@
+name: Betting Model Data Pipeline
+
+# Two ways to run this:
+# 1. workflow_dispatch — manual trigger from the Actions tab, with sport/date inputs.
+#    This is also what you'll use for the first connectivity test.
+# 2. schedule — automatic daily run (cron is always UTC; see note below).
+on:
+  workflow_dispatch:
+    inputs:
+      sport:
+        description: "Sport to ingest"
+        required: true
+        default: "nfl"
+        type: choice
+        options:
+          - nfl
+          - mlb
+          - nba
+          - ncaaf
+          - ncaab
+      date:
+        description: "Date to ingest (YYYY-MM-DD). Leave blank for today."
+        required: false
+        default: ""
+  schedule:
+    # 13:00 UTC = 8:00 AM CDT / 7:00 AM CST (America/Chicago).
+    # Adjust the hour if your data provider updates lines at a different time,
+    # and remember GitHub's cron does not auto-adjust for daylight saving.
+    - cron: "0 13 * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Initialize / verify database schema
+        run: python database_setup.py
+
+      - name: Run data ingestion
+        run: |
+          python main.py \
+            --sport "${{ github.event.inputs.sport || 'nfl' }}" \
+            --date "${{ github.event.inputs.date }}"
+
+      - name: Confirm database connectivity
+        run: python database_setup.py --test
+
+      - name: Post-run summary
+        if: always()
+        run: echo "Run finished for sport=${{ github.event.inputs.sport || 'nfl (scheduled)' }} date=${{ github.event.inputs.date || 'today' }} — check the ingestion_log table for row counts and status."
