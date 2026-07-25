@@ -99,3 +99,40 @@ gh secret set ODDS_API_KEY -R lherrera31820-hub/betting-model
 gh workflow run betting_workflow.yml -R lherrera31820-hub/betting-model
 gh workflow run generate-picks.yml -R lherrera31820-hub/betting-model
 ```
+
+## NFL ingestion bug (2026-07-25)
+
+While double-checking the MLB endpoint-name fix against NFL, found a second, unrelated bug:
+NFL's `ScoresByDate` response has no bare `GameID` field (only `ScoreID` and `GlobalGameID`),
+so `upsert_games()`'s `GameID`/`GameId` lookup evaluated to `None`, tripping the `game_id NOT NULL`
+constraint. Fixed by adding `GlobalGameID`/`ScoreID` as fallbacks (MLB/NBA behavior is unchanged
+since their responses have `GameID`).
+
+Also found: SportsDataIO's `GameOddsByDate` returns HTTP 404 (not an empty array) for dates with
+no odds data (off-season, or dates outside the odds archive window). `fetch_json()` now has a
+`tolerate_404` flag; the odds fetch uses it so this no longer crashes the whole run — it just
+upserts 0 odds rows for that date.
+
+Verified: NFL `2025-09-07` → 13 rows upserted (odds not available for this old date, tolerated).
+MLB `2026-07-25` (today) → still 285 rows upserted, confirming no regression.
+
+Untested: NCAAF/NCAAB may have similar field-name quirks — worth checking before relying on them.
+
+## NCAAF/NCAAB field-name check (2026-07-25)
+
+Checked the two remaining untested sports per the earlier follow-up note:
+
+- **NCAAF**: found the games-by-date endpoint name was wrong. The `GAMES_ENDPOINT_NAME`
+  mapping had `ncaaf: "ScoresByDate"` (an unconfirmed guess, pattern-matched from NFL) but
+  SportsDataIO's CFB API actually uses `GamesByDate` for this -- `ScoresByDate` 404s.
+  Fixed the mapping. Once using the right endpoint, NCAAF's game objects DO have a normal
+  `GameID` field (no field-mapping bug like NFL's), so the existing `GameID`/`GlobalGameID`
+  fallback chain in `upsert_games()` handles it fine as-is.
+  Verified: NCAAF `2025-09-06` -> 79 rows upserted successfully.
+
+- **NCAAB**: blocked before even reaching the games/field-name question -- the teams endpoint
+  itself returns `HTTP 401 Unauthorized: "You are not authorized to access this endpoint.
+  Please contact sales@sportsdata.io for authorization."` This is a subscription/plan
+  limitation on the `SPORTSDATAIO_API_KEY`, not a code bug. College basketball (CBB) access
+  needs to be added to the SportsDataIO plan before this sport can be ingested at all.
+
