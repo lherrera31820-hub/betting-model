@@ -6,9 +6,9 @@ name: Betting Model Data Pipeline
 # 2. schedule — automatic daily run (cron is always UTC; see note below).
 #    Runs EVERY supported sport for "today" automatically, each as its own
 #    matrix job, so an off-season sport with no games just upserts 0 rows
-#    instead of blocking the others. ncaab is excluded from the schedule --
-#    the SportsDataIO API key currently returns 401 Unauthorized for college
-#    basketball (a subscription-tier limitation, not a bug); add it back to
+#    instead of blocking the others. ncaab AND nba are excluded from the
+#    schedule -- the SportsDataIO API key currently returns 401 Unauthorized
+#    for both (a subscription-tier limitation, not a bug); add them back to
 #    the matrix once that's resolved.
 on:
   workflow_dispatch:
@@ -87,7 +87,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        sport: [nfl, mlb, nba, ncaaf]
+        sport: [nfl, mlb, ncaaf]  # nba/ncaab excluded -- see comment above
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}

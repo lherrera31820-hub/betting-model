@@ -136,3 +136,13 @@ Checked the two remaining untested sports per the earlier follow-up note:
   limitation on the `SPORTSDATAIO_API_KEY`, not a code bug. College basketball (CBB) access
   needs to be added to the SportsDataIO plan before this sport can be ingested at all.
 
+## NBA also blocked by subscription tier (2026-07-25)
+
+While confirming the new daily-schedule matrix (`[nfl, mlb, nba, ncaaf]`) with a manual test run,
+NBA failed the same way NCAAB did: `HTTP 401 Unauthorized` on the SportsDataIO teams endpoint --
+`"You are not authorized to access this endpoint. Please contact sales@sportsdata.io for
+authorization."` This is a subscription-tier limitation on the `SPORTSDATAIO_API_KEY`, not a
+code bug. Removed `nba` from the scheduled matrix (now `[nfl, mlb, ncaaf]`) so the daily run
+doesn't fail on it every day. NBA (like NCAAB) is still available for manual `workflow_dispatch`
+runs in case you want to check once your SportsDataIO plan covers it.
+
