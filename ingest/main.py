@@ -36,6 +36,20 @@ SPORT_HOSTS = {
     "ncaab": "https://api.sportsdata.io/v3/cbb",
 }
 
+# SportsDataIO does NOT use one consistent endpoint name for "games/scores on
+# a given date" across sports: football leagues (NFL, confirmed; CFB, matches
+# the same football-league pattern) use ScoresByDate, while MLB, NBA, and CBB
+# (confirmed via SportsDataIO's own docs) use GamesByDate. Using the wrong
+# name returns an HTTP 404, not an auth error, which is what broke the first
+# live MLB run.
+GAMES_ENDPOINT_NAME = {
+    "nfl": "ScoresByDate",
+    "mlb": "GamesByDate",
+    "nba": "GamesByDate",
+    "ncaaf": "ScoresByDate",
+    "ncaab": "GamesByDate",
+}
+
 # The Odds API (https://the-odds-api.com) uses its own sport keys.
 # Used as a SECOND, optional odds source alongside SportsDataIO — not a
 # replacement. Only the sports also covered by SPORT_HOSTS are mapped here.
@@ -355,7 +369,8 @@ def run(sport: str, target_date: str):
                 upsert_teams(cur, sport, teams)
 
                 print("  fetching games...")
-                games = fetch_json(f"{base_url}/scores/json/ScoresByDate/{target_date}", api_key)
+                games_endpoint = GAMES_ENDPOINT_NAME[sport]
+                games = fetch_json(f"{base_url}/scores/json/{games_endpoint}/{target_date}", api_key)
                 rows_upserted += upsert_games(cur, sport, games)
 
                 print("  fetching odds (SportsDataIO)...")
