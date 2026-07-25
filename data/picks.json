@@ -1,7 +1,7 @@
 {
   "status": "ok",
   "schema_version": "1.1.0",
-  "generated_at": "2026-07-25T15:51:20Z",
+  "generated_at": "2026-07-25T15:56:49Z",
   "date_display": "2026-07-25",
   "sport": "MLB",
   "bankroll": 1000.0,
@@ -25,7 +25,7 @@
       "status": "pending",
       "edge_pct": 77.43,
       "model_prob": 90.0,
-      "market_prob": 52.2,
+      "market_prob": 52.4,
       "best_odds": -103,
       "best_book": "BetOnline.ag",
       "kelly_bet": 50.0,
