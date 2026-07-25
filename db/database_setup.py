@@ -15,8 +15,11 @@ Requires the DATABASE_URL environment variable, e.g.:
 import os
 import sys
 import argparse
+import time
 import psycopg2
 from datetime import datetime, timezone
+
+DB_CONNECT_MAX_RETRIES = 3
 
 SCHEMA_STATEMENTS = [
     # Reference table: one row per sport/league
@@ -131,11 +134,27 @@ SCHEMA_STATEMENTS = [
 
 
 def get_connection():
+    """Connect to Postgres with retries + backoff.
+
+    Serverless Postgres providers (e.g. Neon) can take a few seconds to
+    wake up an idle compute endpoint, which occasionally shows up as a
+    connection timeout on the first attempt. Retry a couple times with a
+    short backoff before giving up.
+    """
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         print("ERROR: DATABASE_URL environment variable is not set.", file=sys.stderr)
         sys.exit(1)
-    return psycopg2.connect(database_url, connect_timeout=10)
+    last_error = None
+    for attempt in range(1, DB_CONNECT_MAX_RETRIES + 1):
+        try:
+            return psycopg2.connect(database_url, connect_timeout=10)
+        except psycopg2.OperationalError as exc:
+            last_error = exc
+            print(f"  db connection attempt {attempt}/{DB_CONNECT_MAX_RETRIES} failed: {exc}".strip())
+            if attempt < DB_CONNECT_MAX_RETRIES:
+                time.sleep(3 * attempt)
+    raise last_error
 
 
 def run_schema():

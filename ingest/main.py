@@ -80,11 +80,29 @@ def get_odds_api_key() -> str | None:
 
 
 def get_db_connection():
+    """Connect to Postgres with retries + backoff.
+
+    Serverless Postgres providers (e.g. Neon) can take a few seconds to
+    "wake up" a compute endpoint that's been idle, which occasionally shows
+    up as a connection timeout on the first attempt. Retrying a couple
+    times with a short backoff clears this up without any manual
+    intervention; a genuinely bad DATABASE_URL or downed DB will still fail
+    after MAX_RETRIES.
+    """
     database_url = os.environ.get("DATABASE_URL")
     if not database_url:
         print("ERROR: DATABASE_URL environment variable is not set.", file=sys.stderr)
         sys.exit(1)
-    return psycopg2.connect(database_url, connect_timeout=10)
+    last_error = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            return psycopg2.connect(database_url, connect_timeout=10)
+        except psycopg2.OperationalError as exc:
+            last_error = exc
+            print(f"  db connection attempt {attempt}/{MAX_RETRIES} failed: {exc}".strip())
+            if attempt < MAX_RETRIES:
+                time.sleep(3 * attempt)
+    raise last_error
 
 
 def fetch_json(url: str, api_key: str, tolerate_404: bool = False) -> list:
