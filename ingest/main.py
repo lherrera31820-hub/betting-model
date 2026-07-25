@@ -46,7 +46,7 @@ GAMES_ENDPOINT_NAME = {
     "nfl": "ScoresByDate",
     "mlb": "GamesByDate",
     "nba": "GamesByDate",
-    "ncaaf": "GamesByDate",  # TEMP test
+    "ncaaf": "GamesByDate",  # confirmed via live test 2026-07-25; ScoresByDate 404s for CFB
     "ncaab": "GamesByDate",
 }
 
@@ -384,10 +384,6 @@ def run(sport: str, target_date: str):
                 print("  fetching games...")
                 games_endpoint = GAMES_ENDPOINT_NAME[sport]
                 games = fetch_json(f"{base_url}/scores/json/{games_endpoint}/{target_date}", api_key)
-                if os.environ.get("DEBUG_DUMP_FIRST_GAME") and games:
-                    print("  DEBUG first game keys:", sorted(games[0].keys()))
-                    print("  DEBUG GameID:", games[0].get("GameID"), "GameId:", games[0].get("GameId"),
-                          "GlobalGameID:", games[0].get("GlobalGameID"), "ScoreID:", games[0].get("ScoreID"))
                 rows_upserted += upsert_games(cur, sport, games)
 
                 print("  fetching odds (SportsDataIO)...")
