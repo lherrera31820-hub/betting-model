@@ -111,9 +111,9 @@ def upsert_teams(cur, sport_key: str, teams: list):
     league_id = cur.fetchone()[0]
 
     rows = [
-        (t.get("TeamID") or t.get("GlobalTeamID"), league_id, t.get("Key"), t.get("FullName") or t.get("Name"))
+        (t.get("GlobalTeamID") or t.get("TeamID"), league_id, t.get("Key"), t.get("FullName") or t.get("Name"))
         for t in teams
-        if t.get("TeamID") or t.get("GlobalTeamID")
+        if t.get("GlobalTeamID") or t.get("TeamID")
     ]
     execute_values(
         cur,
@@ -138,13 +138,13 @@ def upsert_games(cur, sport_key: str, games: list):
     rows = []
     for g in games:
         rows.append((
-            g.get("GameID") or g.get("GameId"),
+            g.get("GlobalGameID") or g.get("GameID") or g.get("GameId") or g.get("ScoreID"),
             league_id,
             g.get("Season"),
             str(g.get("Week") or g.get("SeriesInfo") or g.get("SeasonType") or ""),
             g.get("DateTime") or g.get("Day"),
-            g.get("HomeTeamID") or g.get("GlobalHomeTeamID"),
-            g.get("AwayTeamID") or g.get("GlobalAwayTeamID"),
+            g.get("GlobalHomeTeamID") or g.get("HomeTeamID"),
+            g.get("GlobalAwayTeamID") or g.get("AwayTeamID"),
             g.get("HomeScore") or g.get("HomeTeamRuns"),
             g.get("AwayScore") or g.get("AwayTeamRuns"),
             g.get("Status"),
@@ -366,6 +366,8 @@ def run(sport: str, target_date: str):
             with conn.cursor() as cur:
                 print("  fetching teams...")
                 teams = fetch_json(f"{base_url}/scores/json/teams", api_key)
+                if os.environ.get("DEBUG_DUMP_FIRST_GAME") and teams:
+                    print("  DEBUG first team sample:", {k: teams[0][k] for k in list(teams[0].keys())[:12]})
                 upsert_teams(cur, sport, teams)
 
                 print("  fetching games...")
