@@ -14,8 +14,17 @@ on:
     branches: [main]
     paths:
       - "app/**"
-      - "data/picks.json"
       - ".github/workflows/deploy-pages.yml"
+  # generate-picks.yml commits data/picks.json using the default
+  # GITHUB_TOKEN, and GitHub deliberately does not let GITHUB_TOKEN-authored
+  # pushes trigger other `on: push` workflows (an anti-recursion
+  # safeguard) -- so a plain `paths: ["data/picks.json"]` push trigger
+  # above silently never fires for the daily picks commit. workflow_run is
+  # dispatched by GitHub itself once the upstream workflow finishes, so it
+  # isn't subject to that restriction and reliably chains the two jobs.
+  workflow_run:
+    workflows: ["Generate Daily Picks"]
+    types: [completed]
   workflow_dispatch: {}
 
 # Permissions required for the Pages deployment via OIDC.
@@ -33,9 +42,23 @@ jobs:
   build:
     name: Build static site
     runs-on: ubuntu-latest
+    # Only proceed for workflow_run if the upstream Generate Daily Picks run
+    # actually succeeded -- a failed picks run shouldn't trigger a redeploy.
+    # push/workflow_dispatch events aren't gated (there's no upstream
+    # conclusion to check for those).
+    if: >-
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # workflow_run events check out the SHA that *triggered* the run
+          # by default, which can be a moment behind the commit
+          # generate-picks.yml just pushed (e.g. if another push landed in
+          # between). Explicitly pin to the head of main so the deployed
+          # site always reflects the latest picks.json.
+          ref: main
 
       # Flatten app/ to the site root so the dashboard behaves the same way
       # it did when it lived at the repo root in Betbot-, and copy the
