@@ -50,8 +50,14 @@ PITCHER_CACHE    = 'pitcher_cache.json'
 RETRAIN_TRACKER  = 'last_retrain.txt'
 
 # ---- Picks output (consumed by the frontend / committed by GitHub Actions) ----
-# Repo root is the parent of this script's directory (model/).
-REPO_ROOT  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# This script lives at models/mlb/daily_runner.py, two directories below the
+# repo root, so REPO_ROOT needs three dirname() calls to reach the actual
+# repo root (models/mlb -> models -> repo root). A previous version only
+# walked up two levels, which silently wrote to models/data/picks.json
+# instead of data/picks.json -- the workflow's `git status --porcelain
+# data/picks.json` check never saw a diff there, so picks.json was never
+# committed and the live dashboard never updated.
+REPO_ROOT  = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 PICKS_PATH = os.path.join(REPO_ROOT, 'data', 'picks.json')
 
 # ---- Phase 2 feature inputs ----
