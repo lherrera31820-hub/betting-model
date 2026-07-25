@@ -1,7 +1,7 @@
 {
   "status": "ok",
   "schema_version": "1.1.0",
-  "generated_at": "2026-07-25T15:56:49Z",
+  "generated_at": "2026-07-25T16:14:39Z",
   "date_display": "2026-07-25",
   "sport": "MLB",
   "bankroll": 1000.0,
@@ -25,7 +25,7 @@
       "status": "pending",
       "edge_pct": 77.43,
       "model_prob": 90.0,
-      "market_prob": 52.4,
+      "market_prob": 52.0,
       "best_odds": -103,
       "best_book": "BetOnline.ag",
       "kelly_bet": 50.0,
@@ -48,10 +48,10 @@
       "bet_category": "single",
       "bet_type": "moneyline",
       "status": "pending",
-      "edge_pct": 66.97,
+      "edge_pct": 68.31,
       "model_prob": 90.0,
-      "market_prob": 55.5,
-      "best_odds": -117,
+      "market_prob": 55.8,
+      "best_odds": -115,
       "best_book": "LowVig.ag",
       "kelly_bet": 50.0,
       "home_pitcher": "Robbie Ray",
@@ -100,7 +100,7 @@
       "status": "pending",
       "edge_pct": 50.41,
       "model_prob": 82.0,
-      "market_prob": 53.5,
+      "market_prob": 54.2,
       "best_odds": -120,
       "best_book": "FanDuel",
       "kelly_bet": 50.0,
@@ -141,31 +141,6 @@
       "model_prob_final": 0.7388
     },
     {
-      "home_team": "Detroit Tigers",
-      "away_team": "Kansas City Royals",
-      "bet_side": "HOME",
-      "bet_team": "Detroit Tigers",
-      "bet_category": "single",
-      "bet_type": "moneyline",
-      "status": "pending",
-      "edge_pct": 49.25,
-      "model_prob": 90.0,
-      "market_prob": 59.4,
-      "best_odds": -152,
-      "best_book": "LowVig.ag",
-      "kelly_bet": 50.0,
-      "home_pitcher": "Casey Mize",
-      "away_pitcher": "Michael Wacha",
-      "venue": "Comerica Park",
-      "tier": "high",
-      "sos_raw": 0.4995,
-      "sos_second_order": 0.4976,
-      "win_pct_adjusted": 0.4578,
-      "common_opponents_score": 0.5832,
-      "recent_form_weighted": 0.6036,
-      "model_prob_final": 0.7196
-    },
-    {
       "home_team": "Miami Marlins",
       "away_team": "San Diego Padres",
       "bet_side": "HOME",
@@ -189,6 +164,31 @@
       "common_opponents_score": 0.5186,
       "recent_form_weighted": 0.4763,
       "model_prob_final": 0.6798
+    },
+    {
+      "home_team": "Detroit Tigers",
+      "away_team": "Kansas City Royals",
+      "bet_side": "HOME",
+      "bet_team": "Detroit Tigers",
+      "bet_category": "single",
+      "bet_type": "moneyline",
+      "status": "pending",
+      "edge_pct": 48.11,
+      "model_prob": 90.0,
+      "market_prob": 59.4,
+      "best_odds": -155,
+      "best_book": "MyBookie.ag",
+      "kelly_bet": 50.0,
+      "home_pitcher": "Casey Mize",
+      "away_pitcher": "Michael Wacha",
+      "venue": "Comerica Park",
+      "tier": "high",
+      "sos_raw": 0.4995,
+      "sos_second_order": 0.4976,
+      "win_pct_adjusted": 0.4578,
+      "common_opponents_score": 0.5832,
+      "recent_form_weighted": 0.6036,
+      "model_prob_final": 0.7196
     },
     {
       "home_team": "Baltimore Orioles",
@@ -250,7 +250,7 @@
       "status": "pending",
       "edge_pct": 28.7,
       "model_prob": 76.6,
-      "market_prob": 57.8,
+      "market_prob": 58.5,
       "best_odds": -147,
       "best_book": "LowVig.ag",
       "kelly_bet": 50.0,
@@ -397,10 +397,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 266,
-      "implied_prob": 0.2732,
+      "odds": 268,
+      "implied_prob": 0.2717,
       "model_prob": 0.81,
-      "edge": 0.5368,
+      "edge": 0.5383,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -421,9 +421,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         }
       ],
@@ -541,14 +541,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 227,
-      "implied_prob": 0.3058,
-      "model_prob": 0.81,
-      "edge": 0.5042,
+      "odds": 246,
+      "implied_prob": 0.289,
+      "model_prob": 0.7605,
+      "edge": 0.4715,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -563,15 +563,15 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -582,10 +582,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 260,
-      "implied_prob": 0.2778,
+      "odds": 263,
+      "implied_prob": 0.2755,
       "model_prob": 0.7677,
-      "edge": 0.4899,
+      "edge": 0.4922,
       "legs": [
         {
           "leg_id": "MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME",
@@ -594,9 +594,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -619,10 +619,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 240,
-      "implied_prob": 0.2941,
+      "odds": 243,
+      "implied_prob": 0.2915,
       "model_prob": 0.738,
-      "edge": 0.4439,
+      "edge": 0.4465,
       "legs": [
         {
           "leg_id": "MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME",
@@ -631,9 +631,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -656,10 +656,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 209,
-      "implied_prob": 0.3236,
+      "odds": 212,
+      "implied_prob": 0.3205,
       "model_prob": 0.81,
-      "edge": 0.4864,
+      "edge": 0.4895,
       "legs": [
         {
           "leg_id": "MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME",
@@ -668,9 +668,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -689,14 +689,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 207,
-      "implied_prob": 0.3257,
-      "model_prob": 0.81,
-      "edge": 0.4843,
+      "odds": 229,
+      "implied_prob": 0.304,
+      "model_prob": 0.7605,
+      "edge": 0.4565,
       "legs": [
         {
           "leg_id": "MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME",
@@ -705,21 +705,21 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -800,14 +800,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Cincinnati_Reds-at-St._Louis_Cardinals-moneyline-St._Louis_Cardinals_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Cincinnati_Reds-at-St._Louis_Cardinals-moneyline-St._Louis_Cardinals_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 222,
-      "implied_prob": 0.3106,
-      "model_prob": 0.7677,
-      "edge": 0.4571,
+      "odds": 242,
+      "implied_prob": 0.2924,
+      "model_prob": 0.7208,
+      "edge": 0.4284,
       "legs": [
         {
           "leg_id": "MLB-Cincinnati_Reds-at-St._Louis_Cardinals-moneyline-St._Louis_Cardinals_HOME",
@@ -822,15 +822,15 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -874,14 +874,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Houston_Astros-at-Chicago_White_Sox-moneyline-Chicago_White_Sox_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Houston_Astros-at-Chicago_White_Sox-moneyline-Chicago_White_Sox_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 204,
-      "implied_prob": 0.3289,
-      "model_prob": 0.738,
-      "edge": 0.4091,
+      "odds": 222,
+      "implied_prob": 0.3106,
+      "model_prob": 0.6929,
+      "edge": 0.3823,
       "legs": [
         {
           "leg_id": "MLB-Houston_Astros-at-Chicago_White_Sox-moneyline-Chicago_White_Sox_HOME",
@@ -896,29 +896,29 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Athletics-at-Minnesota_Twins-moneyline-Minnesota_Twins_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Athletics-at-Minnesota_Twins-moneyline-Minnesota_Twins_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 2,
-      "odds": 176,
-      "implied_prob": 0.3623,
-      "model_prob": 0.81,
-      "edge": 0.4477,
+      "odds": 193,
+      "implied_prob": 0.3413,
+      "model_prob": 0.7605,
+      "edge": 0.4192,
       "legs": [
         {
           "leg_id": "MLB-Athletics-at-Minnesota_Twins-moneyline-Minnesota_Twins_HOME",
@@ -933,15 +933,15 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -952,10 +952,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 610,
-      "implied_prob": 0.1408,
+      "odds": 616,
+      "implied_prob": 0.1397,
       "model_prob": 0.6909,
-      "edge": 0.5501,
+      "edge": 0.5513,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -976,9 +976,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -1001,10 +1001,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 570,
-      "implied_prob": 0.1493,
+      "odds": 576,
+      "implied_prob": 0.1479,
       "model_prob": 0.6642,
-      "edge": 0.5149,
+      "edge": 0.5163,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1025,9 +1025,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -1050,10 +1050,10 @@
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 509,
-      "implied_prob": 0.1642,
+      "odds": 514,
+      "implied_prob": 0.1629,
       "model_prob": 0.729,
-      "edge": 0.5648,
+      "edge": 0.5661,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1074,9 +1074,9 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
@@ -1095,14 +1095,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Los_Angeles_Angels-at-San_Francisco_Giants-moneyline-San_Francisco_Giants_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 506,
-      "implied_prob": 0.165,
-      "model_prob": 0.729,
-      "edge": 0.564,
+      "odds": 548,
+      "implied_prob": 0.1543,
+      "model_prob": 0.6845,
+      "edge": 0.5301,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1123,21 +1123,21 @@
           "market": "moneyline",
           "selection": "San Francisco Giants HOME",
           "line": null,
-          "odds": -117,
+          "odds": -115,
           "model_prob": 0.9,
-          "edge": 0.6697,
+          "edge": 0.6831,
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -1242,14 +1242,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Cincinnati_Reds-at-St._Louis_Cardinals-moneyline-St._Louis_Cardinals_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Cincinnati_Reds-at-St._Louis_Cardinals-moneyline-St._Louis_Cardinals_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 535,
-      "implied_prob": 0.1575,
-      "model_prob": 0.6909,
-      "edge": 0.5334,
+      "odds": 573,
+      "implied_prob": 0.1486,
+      "model_prob": 0.6487,
+      "edge": 0.5001,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1276,15 +1276,15 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
@@ -1340,14 +1340,14 @@
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Houston_Astros-at-Chicago_White_Sox-moneyline-Chicago_White_Sox_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Houston_Astros-at-Chicago_White_Sox-moneyline-Chicago_White_Sox_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 499,
-      "implied_prob": 0.1669,
-      "model_prob": 0.6642,
-      "edge": 0.4973,
+      "odds": 535,
+      "implied_prob": 0.1575,
+      "model_prob": 0.6236,
+      "edge": 0.4661,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1374,29 +1374,29 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
       "status": "pending"
     },
     {
-      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Athletics-at-Minnesota_Twins-moneyline-Minnesota_Twins_HOME+MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
+      "bet_id": "parlay:MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME+MLB-Athletics-at-Minnesota_Twins-moneyline-Minnesota_Twins_HOME+MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
       "bet_category": "combination",
       "bet_type": "parlay",
       "num_legs": 3,
-      "odds": 445,
-      "implied_prob": 0.1835,
-      "model_prob": 0.729,
-      "edge": 0.5455,
+      "odds": 477,
+      "implied_prob": 0.1733,
+      "model_prob": 0.6845,
+      "edge": 0.5111,
       "legs": [
         {
           "leg_id": "MLB-Toronto_Blue_Jays-at-Boston_Red_Sox-moneyline-Boston_Red_Sox_HOME",
@@ -1423,15 +1423,15 @@
           "status": "pending"
         },
         {
-          "leg_id": "MLB-Kansas_City_Royals-at-Detroit_Tigers-moneyline-Detroit_Tigers_HOME",
-          "game_id": "Kansas_City_Royals-at-Detroit_Tigers",
+          "leg_id": "MLB-San_Diego_Padres-at-Miami_Marlins-moneyline-Miami_Marlins_HOME",
+          "game_id": "San_Diego_Padres-at-Miami_Marlins",
           "league": "MLB",
           "market": "moneyline",
-          "selection": "Detroit Tigers HOME",
+          "selection": "Miami Marlins HOME",
           "line": null,
-          "odds": -152,
-          "model_prob": 0.9,
-          "edge": 0.4925,
+          "odds": -132,
+          "model_prob": 0.845,
+          "edge": 0.4857,
           "status": "pending"
         }
       ],
