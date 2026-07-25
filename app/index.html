@@ -50,6 +50,9 @@
     .leg .lmeta{font-size:12px;color:var(--muted)}
     .leg .lsel{font-size:13px;font-weight:600}
     .badge-type{font-size:10px;padding:3px 8px;border-radius:999px;background:#0d1526;border:1px solid var(--line);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+    .sporttabs{display:flex;gap:8px;margin:14px 0 0}
+    .sporttab{flex:1;text-align:center;padding:9px 6px;border-radius:12px;font-size:13px;font-weight:700;color:var(--muted);background:var(--card);border:1px solid var(--line);cursor:pointer}
+    .sporttab.active{background:rgba(34,197,94,.12);color:var(--green);border-color:rgba(34,197,94,.3)}
   </style>
 </head>
 <body>
@@ -62,6 +65,11 @@
     </header>
     <main>
       <div class="banner" id="banner" style="display:none"></div>
+      <div class="sporttabs" id="sportTabs">
+        <div class="sporttab active" data-sport="MLB">MLB</div>
+        <div class="sporttab" data-sport="NFL">NFL</div>
+        <div class="sporttab" data-sport="NCAAF">NCAAF</div>
+      </div>
       <section class="hero">
         <div class="bank">Current bankroll</div>
         <div class="amt" id="bankroll">—</div>
@@ -224,29 +232,51 @@
       }
     }
 
-    function renderDemo(message) {
+    function renderDemo(message, sportLabel) {
       $('statusPill').textContent = 'DEMO';
       $('statusPill').style.background = 'rgba(245,158,11,.12)';
       $('statusPill').style.color = '#f59e0b';
       $('statusPill').style.borderColor = 'rgba(245,158,11,.25)';
       showBanner(message);
+      $('subHead').textContent = sportLabel || '';
       $('bankroll').textContent = '—';
       $('picks').innerHTML = '<div class="empty">No picks available yet.</div>';
       $('combosSection').style.display = 'none';
       renderPerformance({});
     }
 
+    // Sport tab state + per-sport picks feed. Each sport's file is generated
+    // independently and gracefully degrades to {status:"no_data"} on its own
+    // (e.g. off-season) without affecting the other tabs.
+    const SPORT_FEEDS = {
+      MLB:   '../data/picks.json',
+      NFL:   '../data/picks_nfl.json',
+      NCAAF: '../data/picks_ncaaf.json',
+    };
+    let currentSport = localStorage.getItem('betbot_sport') || 'MLB';
+    if (!SPORT_FEEDS[currentSport]) currentSport = 'MLB';
+
+    function setActiveTab(sport) {
+      document.querySelectorAll('.sporttab').forEach((el) => {
+        el.classList.toggle('active', el.dataset.sport === sport);
+      });
+    }
+
     async function load() {
+      setActiveTab(currentSport);
+      const feedUrl = SPORT_FEEDS[currentSport];
       try {
-        const res = await fetch('../data/picks.json', { cache: 'no-store' });
+        const res = await fetch(feedUrl, { cache: 'no-store' });
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
         if (!data || data.status === 'no_data') {
-          renderDemo(data && data.reason ? data.reason : 'No picks yet — demo mode.');
+          renderDemo(data && data.reason ? data.reason : 'No picks yet — demo mode.', `${data && data.sport || currentSport} • no picks yet`);
           return;
         }
         $('statusPill').textContent = 'LIVE';
-        if (data.date_display) $('subHead').textContent = `${data.sport || ''} • ${data.date_display}`.trim().replace(/^• /, '');
+        showBanner('');
+        $('banner').style.display = 'none';
+        if (data.date_display) $('subHead').textContent = `${data.sport || currentSport} • ${data.date_display}`.trim().replace(/^• /, '');
         $('bankroll').textContent = money(data.bankroll);
         renderPerformance(data.performance);
         // Bet-type mode controls which sections show. "combined" hides Singles.
@@ -255,12 +285,21 @@
         renderPicks(data.picks);
         renderCombos(data.combinations);
       } catch (err) {
-        renderDemo('No picks yet — demo mode. (' + err.message + ')');
+        renderDemo('No picks yet — demo mode. (' + err.message + ')', currentSport);
       }
     }
+
+    document.querySelectorAll('.sporttab').forEach((el) => {
+      el.addEventListener('click', () => {
+        currentSport = el.dataset.sport;
+        localStorage.setItem('betbot_sport', currentSport);
+        load();
+      });
+    });
+
     load();
-    // Live sync: re-fetch picks.json so single-game picks AND individual
-    // parlay/teaser leg statuses refresh in near real time.
+    // Live sync: re-fetch the current sport's picks feed so single-game picks
+    // AND individual parlay/teaser leg statuses refresh in near real time.
     setInterval(load, 60000);
   </script>
 </body>

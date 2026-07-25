@@ -1,7 +1,8 @@
 name: Deploy to GitHub Pages
 
 # Publishes the betting-model dashboard (app/index.html + app/dashboard/index.html)
-# to GitHub Pages, together with the data/picks.json feed it depends on.
+# to GitHub Pages, together with the data/picks.json (MLB), data/picks_nfl.json,
+# and data/picks_ncaaf.json feeds it depends on.
 #
 # Only the public-facing app/ and data/ directories are published — backend
 # code, model artifacts (models/, *.pkl, training_data.csv, ingest/, engine/,
@@ -75,9 +76,15 @@ jobs:
           cp -f app/icon-192.png app/icon-512.png app/manifest.webmanifest app/service-worker.js _site/
           cp -f app/dashboard/index.html _site/dashboard/index.html
           cp -f data/picks.json _site/data/picks.json
+          cp -f data/picks_nfl.json _site/data/picks_nfl.json 2>/dev/null || echo '{"status":"no_data","reason":"file not yet generated","sport":"NFL"}' > _site/data/picks_nfl.json
+          cp -f data/picks_ncaaf.json _site/data/picks_ncaaf.json 2>/dev/null || echo '{"status":"no_data","reason":"file not yet generated","sport":"NCAAF"}' > _site/data/picks_ncaaf.json
 
-          # Rewrite the relative picks.json fetch path for the flattened layout.
-          sed -i "s#fetch('../data/picks.json'#fetch('./data/picks.json'#" _site/index.html
+          # Rewrite the relative picks feed paths for the flattened layout.
+          # These live in the SPORT_FEEDS object (app/index.html fetches
+          # via a variable, not a literal fetch('../data/...') call), so
+          # match on the '../data/picks*.json' string literals themselves
+          # rather than on fetch(...).
+          sed -i "s#'../data/picks.json'#'./data/picks.json'#; s#'../data/picks_nfl.json'#'./data/picks_nfl.json'#; s#'../data/picks_ncaaf.json'#'./data/picks_ncaaf.json'#" _site/index.html
 
           echo "Published files:"
           find _site -maxdepth 2 -type f | sort

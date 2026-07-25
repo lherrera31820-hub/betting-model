@@ -3,11 +3,14 @@ name: Generate Daily Picks
 # Folded in from the former Betbot- repo's daily-picks.yml as part of the
 # betting-model / Betbot- merge (see MERGE_NOTES.md).
 #
-# Generates data/picks.json each day and commits it to main.
+# Generates data/picks.json (MLB), data/picks_nfl.json, and data/picks_ncaaf.json
+# each day and commits them to main.
 #
-# NOTE: Set ODDS_API_KEY as a repo secret (Settings -> Secrets and variables ->
-# Actions, or `gh secret set ODDS_API_KEY`) for real market data. Without it the
-# runner writes a {"status": "no_data"} picks.json and still exits 0.
+# NOTE: Set ODDS_API_KEY and SPORTSDATAIO_API_KEY as repo secrets (Settings ->
+# Secrets and variables -> Actions, or `gh secret set ...`) for real market
+# data. Without them, each runner writes its own {"status": "no_data"} JSON
+# and still exits 0 -- one sport's missing secret/off-season gap never blocks
+# the others.
 #
 # Publishing: this workflow only updates data/picks.json in THIS repo. It does
 # NOT redeploy any GitHub Pages site — the former Betbot- repo still owns Pages
@@ -40,19 +43,32 @@ jobs:
           pip install -r requirements.txt
           pip install -r models/mlb/requirements.txt
 
-      - name: Generate daily picks
+      - name: Generate MLB picks
         env:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
         run: python models/mlb/daily_runner.py
 
-      - name: Commit picks.json if changed
+      - name: Generate NFL picks
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+        run: python models/nfl/daily_runner.py
+
+      - name: Generate NCAAF picks
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+          SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+        run: python models/ncaaf/daily_runner.py
+
+      - name: Commit picks files if changed
         run: |
-          if [ -n "$(git status --porcelain data/picks.json)" ]; then
+          FILES="data/picks.json data/picks_nfl.json data/picks_ncaaf.json"
+          if [ -n "$(git status --porcelain $FILES)" ]; then
             git config user.name "github-actions[bot]"
             git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add data/picks.json
-            git commit -m "chore: update daily picks.json"
+            git add $FILES
+            git commit -m "chore: update daily picks (MLB/NFL/NCAAF)"
             git push
           else
-            echo "No change to data/picks.json — nothing to commit."
+            echo "No change to picks files — nothing to commit."
           fi
