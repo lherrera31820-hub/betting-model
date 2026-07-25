@@ -39,7 +39,6 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
       ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}  # optional — workflow still runs fine if unset
-      DEBUG_DUMP_FIRST_GAME: "1"  # TEMP debug flag, will be removed after diagnosing field names
     steps:
       - name: Check out repository
         uses: actions/checkout@v4

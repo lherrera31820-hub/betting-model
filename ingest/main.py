@@ -87,8 +87,18 @@ def get_db_connection():
     return psycopg2.connect(database_url, connect_timeout=10)
 
 
-def fetch_json(url: str, api_key: str) -> list:
-    """GET a SportsDataIO endpoint with retries and basic backoff."""
+def fetch_json(url: str, api_key: str, tolerate_404: bool = False) -> list:
+    """GET a SportsDataIO endpoint with retries and basic backoff.
+
+    tolerate_404: if True, an HTTP 404 is treated as "no data available for
+    this query" and returns an empty list instead of raising. SportsDataIO
+    returns 404 (not an empty 200 array) for odds endpoints on dates with no
+    games/odds -- e.g. off-season dates, or historical dates old enough that
+    they've moved to SportsDataIO's separate Betting Data Archive. This is
+    expected and should not fail the whole ingestion run; core endpoints
+    like teams/games should NOT set this, since a 404 there usually means a
+    real problem (bad URL, wrong sport, etc.).
+    """
     headers = {"Ocp-Apim-Subscription-Key": api_key}
     last_error = None
     for attempt in range(1, MAX_RETRIES + 1):
@@ -96,6 +106,9 @@ def fetch_json(url: str, api_key: str) -> list:
             resp = requests.get(url, headers=headers, timeout=REQUEST_TIMEOUT)
             if resp.status_code == 200:
                 return resp.json()
+            if resp.status_code == 404 and tolerate_404:
+                print(f"  no data available (404) for {url} -- treating as empty")
+                return []
             last_error = f"HTTP {resp.status_code}: {resp.text[:300]}"
         except requests.RequestException as exc:
             last_error = str(exc)
@@ -111,9 +124,9 @@ def upsert_teams(cur, sport_key: str, teams: list):
     league_id = cur.fetchone()[0]
 
     rows = [
-        (t.get("GlobalTeamID") or t.get("TeamID"), league_id, t.get("Key"), t.get("FullName") or t.get("Name"))
+        (t.get("TeamID") or t.get("GlobalTeamID"), league_id, t.get("Key"), t.get("FullName") or t.get("Name"))
         for t in teams
-        if t.get("GlobalTeamID") or t.get("TeamID")
+        if t.get("TeamID") or t.get("GlobalTeamID")
     ]
     execute_values(
         cur,
@@ -138,13 +151,13 @@ def upsert_games(cur, sport_key: str, games: list):
     rows = []
     for g in games:
         rows.append((
-            g.get("GlobalGameID") or g.get("GameID") or g.get("GameId") or g.get("ScoreID"),
+            g.get("GameID") or g.get("GameId") or g.get("GlobalGameID") or g.get("ScoreID"),
             league_id,
             g.get("Season"),
             str(g.get("Week") or g.get("SeriesInfo") or g.get("SeasonType") or ""),
             g.get("DateTime") or g.get("Day"),
-            g.get("GlobalHomeTeamID") or g.get("HomeTeamID"),
-            g.get("GlobalAwayTeamID") or g.get("AwayTeamID"),
+            g.get("HomeTeamID") or g.get("GlobalHomeTeamID"),
+            g.get("AwayTeamID") or g.get("GlobalAwayTeamID"),
             g.get("HomeScore") or g.get("HomeTeamRuns"),
             g.get("AwayScore") or g.get("AwayTeamRuns"),
             g.get("Status"),
@@ -366,20 +379,15 @@ def run(sport: str, target_date: str):
             with conn.cursor() as cur:
                 print("  fetching teams...")
                 teams = fetch_json(f"{base_url}/scores/json/teams", api_key)
-                if os.environ.get("DEBUG_DUMP_FIRST_GAME") and teams:
-                    print("  DEBUG first team sample:", {k: teams[0][k] for k in list(teams[0].keys())[:12]})
                 upsert_teams(cur, sport, teams)
 
                 print("  fetching games...")
                 games_endpoint = GAMES_ENDPOINT_NAME[sport]
                 games = fetch_json(f"{base_url}/scores/json/{games_endpoint}/{target_date}", api_key)
-                if os.environ.get("DEBUG_DUMP_FIRST_GAME") and games:
-                    print("  DEBUG first game keys:", sorted(games[0].keys()))
-                    print("  DEBUG first game sample:", {k: games[0][k] for k in list(games[0].keys())[:15]})
                 rows_upserted += upsert_games(cur, sport, games)
 
                 print("  fetching odds (SportsDataIO)...")
-                odds = fetch_json(f"{base_url}/odds/json/GameOddsByDate/{target_date}", api_key)
+                odds = fetch_json(f"{base_url}/odds/json/GameOddsByDate/{target_date}", api_key, tolerate_404=True)
                 rows_upserted += upsert_odds(cur, odds)
 
                 odds_api_key = get_odds_api_key()
