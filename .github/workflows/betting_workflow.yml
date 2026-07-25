@@ -2,8 +2,14 @@ name: Betting Model Data Pipeline
 
 # Two ways to run this:
 # 1. workflow_dispatch — manual trigger from the Actions tab, with sport/date inputs.
-#    This is also what you'll use for the first connectivity test.
+#    Runs a single sport/date of your choosing. Good for testing and backfills.
 # 2. schedule — automatic daily run (cron is always UTC; see note below).
+#    Runs EVERY supported sport for "today" automatically, each as its own
+#    matrix job, so an off-season sport with no games just upserts 0 rows
+#    instead of blocking the others. ncaab is excluded from the schedule --
+#    the SportsDataIO API key currently returns 401 Unauthorized for college
+#    basketball (a subscription-tier limitation, not a bug); add it back to
+#    the matrix once that's resolved.
 on:
   workflow_dispatch:
     inputs:
@@ -32,7 +38,10 @@ permissions:
   contents: read
 
 jobs:
-  ingest:
+  # Manual, single-sport run -- used for on-demand testing/backfills via the
+  # Actions tab. Only runs when triggered by workflow_dispatch.
+  ingest-manual:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -58,7 +67,7 @@ jobs:
       - name: Run data ingestion
         run: |
           python ingest/main.py \
-            --sport "${{ github.event.inputs.sport || 'nfl' }}" \
+            --sport "${{ github.event.inputs.sport }}" \
             --date "${{ github.event.inputs.date }}"
 
       - name: Confirm database connectivity
@@ -66,4 +75,48 @@ jobs:
 
       - name: Post-run summary
         if: always()
-        run: echo "Run finished for sport=${{ github.event.inputs.sport || 'nfl (scheduled)' }} date=${{ github.event.inputs.date || 'today' }} — check the ingestion_log table for row counts and status."
+        run: echo "Run finished for sport=${{ github.event.inputs.sport }} date=${{ github.event.inputs.date || 'today' }} — check the ingestion_log table for row counts and status."
+
+  # Automatic daily run -- ingests every supported sport for "today". Each
+  # sport is its own matrix job, so one sport being off-season (0 games,
+  # still succeeds) or erroring doesn't block the others.
+  ingest-scheduled:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        sport: [nfl, mlb, nba, ncaaf]
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SPORTSDATAIO_API_KEY: ${{ secrets.SPORTSDATAIO_API_KEY }}
+      ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}  # optional — workflow still runs fine if unset
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Initialize / verify database schema
+        run: python db/database_setup.py
+
+      - name: Run data ingestion
+        run: |
+          python ingest/main.py \
+            --sport "${{ matrix.sport }}" \
+            --date ""
+
+      - name: Confirm database connectivity
+        run: python db/database_setup.py --test
+
+      - name: Post-run summary
+        if: always()
+        run: echo "Scheduled run finished for sport=${{ matrix.sport }} date=today — check the ingestion_log table for row counts and status."
