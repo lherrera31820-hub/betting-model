@@ -53,16 +53,16 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Initialize / verify database schema
-        run: python database_setup.py
+        run: python db/database_setup.py
 
       - name: Run data ingestion
         run: |
-          python main.py \
+          python ingest/main.py \
             --sport "${{ github.event.inputs.sport || 'nfl' }}" \
             --date "${{ github.event.inputs.date }}"
 
       - name: Confirm database connectivity
-        run: python database_setup.py --test
+        run: python db/database_setup.py --test
 
       - name: Post-run summary
         if: always()

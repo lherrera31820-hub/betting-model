@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Betbot · Pages Deployment Dashboard</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --green: #2ea043;
+    --red: #da3633;
+    --yellow: #d29922;
+    --blue: #388bfd;
+    --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 24px;
+  }
+  .wrap { max-width: 1000px; margin: 0 auto; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; justify-content: space-between; }
+  h1 { font-size: 1.5rem; margin: 0; }
+  .muted { color: var(--muted); font-size: 0.85rem; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  .banner {
+    display: none;
+    background: var(--red);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 18px 0;
+    font-weight: 600;
+  }
+  .banner.show { display: block; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 18px 0; }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card h3 { margin: 0 0 8px; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px; border-radius: 999px; font-weight: 600; font-size: 0.9rem;
+    color: #fff;
+  }
+  .badge .dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  .badge.success { background: var(--green); }
+  .badge.failure { background: var(--red); }
+  .badge.progress { background: var(--blue); }
+  .badge.unknown { background: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.4px; }
+  td.status { white-space: nowrap; }
+  .pill { font-size: 0.78rem; padding: 2px 8px; border-radius: 999px; color: #fff; }
+  .pill.success { background: var(--green); }
+  .pill.failure { background: var(--red); }
+  .pill.progress { background: var(--blue); }
+  .pill.cancelled, .pill.skipped, .pill.unknown { background: var(--muted); }
+  code { background: #21262d; padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
+
+  .legend { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-top: 18px; font-size: 0.88rem; color: var(--muted); }
+  footer { margin-top: 20px; color: var(--muted); font-size: 0.8rem; text-align: center; }
+  .spin { animation: spin 1.2s linear infinite; display: inline-block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 600px) {
+    body { padding: 14px; }
+    th:nth-child(4), td:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Betbot · Pages Deployment</h1>
+      <div class="muted">Live status of the GitHub Pages CI/CD pipeline</div>
+    </div>
+    <div class="muted">Last checked: <span id="lastChecked">—</span></div>
+  </header>
+
+  <div id="banner" class="banner"></div>
+
+  <div class="cards">
+    <div class="card">
+      <h3>Current Status</h3>
+      <span id="statusBadge" class="badge unknown"><span class="dot"></span> Loading…</span>
+    </div>
+    <div class="card">
+      <h3>Live Site</h3>
+      <div id="siteUrl">—</div>
+    </div>
+    <div class="card">
+      <h3>Latest Commit</h3>
+      <div id="latestCommit" class="muted">—</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Last 10 Deployment Runs</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Branch</th>
+          <th>Commit</th>
+          <th>Started</th>
+          <th>Duration</th>
+          <th>Logs</th>
+        </tr>
+      </thead>
+      <tbody id="runsBody">
+        <tr><td colspan="6" class="muted">Loading runs…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend">
+    <strong>How alerting works:</strong> if a deployment fails — or if the pipeline stops
+    triggering entirely — a monitoring workflow automatically opens a GitHub Issue labeled
+    <code>pages-alert</code> and auto-closes it once the site recovers.
+    View active alerts:
+    <a id="issuesLink" href="https://github.com/lherrera31820-hub/Betbot-/issues?q=is%3Aissue+label%3Apages-alert" target="_blank" rel="noopener">issues labeled <code>pages-alert</code></a>.
+  </div>
+
+  <footer>
+    Auto-refreshes every 60s · Data from the public GitHub REST API ·
+    <a href="https://github.com/lherrera31820-hub/Betbot-" target="_blank" rel="noopener">repository</a>
+  </footer>
+</div>
+
+<script>
+  const OWNER = "lherrera31820-hub";
+  const REPO = "Betbot-";
+  const WORKFLOW = "deploy-pages.yml";
+  const API = `https://api.github.com/repos/${OWNER}/${REPO}`;
+  const RUNS_URL = `${API}/actions/workflows/${WORKFLOW}/runs?per_page=10`;
+  const PAGES_URL = `${API}/pages`;
+
+  const $ = (id) => document.getElementById(id);
+
+  function fmtDuration(startISO, endISO) {
+    if (!startISO || !endISO) return "—";
+    const ms = new Date(endISO) - new Date(startISO);
+    if (isNaN(ms) || ms < 0) return "—";
+    const s = Math.round(ms / 1000);
+    if (s < 60) return `${s}s`;
+    const m = Math.floor(s / 60), rs = s % 60;
+    return `${m}m ${rs}s`;
+  }
+
+  function fmtTime(iso) {
+    if (!iso) return "—";
+    return new Date(iso).toLocaleString();
+  }
+
+  // Map a run to a normalized state: success | failure | progress | <raw>
+  function runState(run) {
+    if (run.status !== "completed") return "progress";
+    return run.conclusion || "unknown";
+  }
+
+  function setBadge(state) {
+    const badge = $("statusBadge");
+    let cls = "unknown", label = "Unknown";
+    if (state === "success") { cls = "success"; label = "Operational"; }
+    else if (state === "failure" || state === "timed_out") { cls = "failure"; label = "Failed"; }
+    else if (state === "progress") { cls = "progress"; label = "In progress"; }
+    else if (state === "cancelled") { cls = "unknown"; label = "Cancelled"; }
+    badge.className = `badge ${cls}`;
+    badge.innerHTML = `<span class="dot"></span> ${label}`;
+  }
+
+  function showBanner(msg) {
+    const b = $("banner");
+    if (msg) { b.textContent = "⚠ " + msg; b.classList.add("show"); }
+    else { b.classList.remove("show"); b.textContent = ""; }
+  }
+
+  async function loadPagesUrl() {
+    try {
+      const res = await fetch(PAGES_URL, { headers: { Accept: "application/vnd.github+json" } });
+      if (!res.ok) throw new Error("pages " + res.status);
+      const data = await res.json();
+      if (data.html_url) {
+        $("siteUrl").innerHTML = `<a href="${data.html_url}" target="_blank" rel="noopener">${data.html_url}</a>`;
+        return true;
+      }
+    } catch (e) {
+      $("siteUrl").innerHTML = `<span class="muted">Pages not enabled yet</span>`;
+    }
+    return false;
+  }
+
+  async function loadRuns() {
+    try {
+      const res = await fetch(RUNS_URL, { headers: { Accept: "application/vnd.github+json" } });
+      if (!res.ok) throw new Error("runs " + res.status);
+      const data = await res.json();
+      const runs = data.workflow_runs || [];
+
+      const body = $("runsBody");
+      if (runs.length === 0) {
+        body.innerHTML = `<tr><td colspan="6" class="muted">No deployment runs found yet.</td></tr>`;
+        setBadge("unknown");
+        showBanner("No successful deployment exists yet. Push to main to trigger a deploy.");
+        return;
+      }
+
+      const latest = runs[0];
+      const state = runState(latest);
+      setBadge(state);
+
+      const anySuccess = runs.some(r => r.conclusion === "success");
+      if (state === "failure" || state === "timed_out") {
+        showBanner("Latest deployment FAILED. An automatic pages-alert issue has been opened. Check the logs.");
+      } else if (!anySuccess) {
+        showBanner("No successful deployment exists yet.");
+      } else {
+        showBanner(null);
+      }
+
+      $("latestCommit").innerHTML =
+        `<code>${(latest.head_sha || "").slice(0, 7)}</code> — ${escapeHtml(latest.head_commit?.message?.split("\n")[0] || "")}`;
+
+      body.innerHTML = runs.map(r => {
+        const st = runState(r);
+        const msg = escapeHtml((r.head_commit?.message || "").split("\n")[0]) || "—";
+        return `<tr>
+          <td class="status"><span class="pill ${st}">${st}</span></td>
+          <td>${escapeHtml(r.head_branch || "—")}</td>
+          <td><code>${(r.head_sha || "").slice(0,7)}</code> ${msg}</td>
+          <td>${fmtTime(r.run_started_at || r.created_at)}</td>
+          <td>${fmtDuration(r.run_started_at || r.created_at, r.updated_at)}</td>
+          <td><a href="${r.html_url}" target="_blank" rel="noopener">View logs</a></td>
+        </tr>`;
+      }).join("");
+    } catch (e) {
+      $("runsBody").innerHTML = `<tr><td colspan="6" class="muted">Could not load runs: ${escapeHtml(e.message)} (API rate limit or Actions disabled)</td></tr>`;
+      setBadge("unknown");
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  async function refresh() {
+    await Promise.all([loadPagesUrl(), loadRuns()]);
+    $("lastChecked").textContent = new Date().toLocaleTimeString();
+  }
+
+  refresh();
+  setInterval(refresh, 60000);
+</script>
+</body>
+</html>
