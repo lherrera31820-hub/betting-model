@@ -371,6 +371,9 @@ def run(sport: str, target_date: str):
                 print("  fetching games...")
                 games_endpoint = GAMES_ENDPOINT_NAME[sport]
                 games = fetch_json(f"{base_url}/scores/json/{games_endpoint}/{target_date}", api_key)
+                if os.environ.get("DEBUG_DUMP_FIRST_GAME") and games:
+                    print("  DEBUG first game keys:", sorted(games[0].keys()))
+                    print("  DEBUG first game sample:", {k: games[0][k] for k in list(games[0].keys())[:15]})
                 rows_upserted += upsert_games(cur, sport, games)
 
                 print("  fetching odds (SportsDataIO)...")
