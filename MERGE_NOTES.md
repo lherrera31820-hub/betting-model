@@ -118,3 +118,21 @@ MLB `2026-07-25` (today) → still 285 rows upserted, confirming no regression.
 
 Untested: NCAAF/NCAAB may have similar field-name quirks — worth checking before relying on them.
 
+## NCAAF/NCAAB field-name check (2026-07-25)
+
+Checked the two remaining untested sports per the earlier follow-up note:
+
+- **NCAAF**: found the games-by-date endpoint name was wrong. The `GAMES_ENDPOINT_NAME`
+  mapping had `ncaaf: "ScoresByDate"` (an unconfirmed guess, pattern-matched from NFL) but
+  SportsDataIO's CFB API actually uses `GamesByDate` for this -- `ScoresByDate` 404s.
+  Fixed the mapping. Once using the right endpoint, NCAAF's game objects DO have a normal
+  `GameID` field (no field-mapping bug like NFL's), so the existing `GameID`/`GlobalGameID`
+  fallback chain in `upsert_games()` handles it fine as-is.
+  Verified: NCAAF `2025-09-06` -> 79 rows upserted successfully.
+
+- **NCAAB**: blocked before even reaching the games/field-name question -- the teams endpoint
+  itself returns `HTTP 401 Unauthorized: "You are not authorized to access this endpoint.
+  Please contact sales@sportsdata.io for authorization."` This is a subscription/plan
+  limitation on the `SPORTSDATAIO_API_KEY`, not a code bug. College basketball (CBB) access
+  needs to be added to the SportsDataIO plan before this sport can be ingested at all.
+
