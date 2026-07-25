@@ -46,7 +46,7 @@ GAMES_ENDPOINT_NAME = {
     "nfl": "ScoresByDate",
     "mlb": "GamesByDate",
     "nba": "GamesByDate",
-    "ncaaf": "ScoresByDate",
+    "ncaaf": "GamesByDate",  # TEMP test
     "ncaab": "GamesByDate",
 }
 
