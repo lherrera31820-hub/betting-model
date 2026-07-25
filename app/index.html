@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b1220" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="BetBot" />
+  <title>BetBot Pro</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <style>
+    :root {
+      --bg:#0b1220; --card:#121a2b; --card2:#182235; --text:#e5eefc; --muted:#93a4bf;
+      --line:#25324a; --green:#22c55e; --red:#ef4444; --blue:#38bdf8; --yellow:#f59e0b;
+    }
+    *{box-sizing:border-box} body{margin:0;font-family:Inter,system-ui,sans-serif;background:linear-gradient(180deg,#09101d,#0b1220 20%,#0d1526);color:var(--text)}
+    .app{max-width:480px;margin:0 auto;min-height:100dvh;padding-bottom:84px}
+    header{padding:18px 16px 12px;position:sticky;top:0;background:rgba(11,18,32,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+    .top{display:flex;justify-content:space-between;align-items:center}.logo{display:flex;gap:12px;align-items:center}
+    .mark{width:40px;height:40px;border-radius:12px;background:#111827;border:1px solid #1f8f66;display:grid;place-items:center;color:var(--green);font-weight:800}
+    h1{font-size:18px;margin:0}.sub{color:var(--muted);font-size:12px;margin-top:2px}.pill{font-size:11px;padding:6px 10px;border-radius:999px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+    main{padding:16px}.hero{background:linear-gradient(135deg,#0f172a,#13203a);border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .bank{font-size:13px;color:var(--muted)} .amt{font-size:34px;font-weight:800;margin:6px 0 10px}.meta{display:flex;gap:10px;flex-wrap:wrap}.chip{background:#0d1526;border:1px solid var(--line);padding:8px 10px;border-radius:12px;font-size:12px}
+    .section{margin-top:18px}.title{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:0 0 10px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;margin-bottom:12px}
+    .row{display:flex;justify-content:space-between;gap:12px}.match{font-size:16px;font-weight:700}.tiny{font-size:12px;color:var(--muted)}
+    .edge{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:700}.e-high{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)} .e-med{background:rgba(245,158,11,.12);color:var(--yellow);border:1px solid rgba(245,158,11,.25)} .e-low{background:rgba(56,189,248,.12);color:var(--blue);border:1px solid rgba(56,189,248,.25)}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.mini{background:var(--card2);border-radius:14px;padding:10px}.lab{font-size:10px;color:var(--muted);text-transform:uppercase}.val{font-size:14px;font-weight:700;margin-top:3px}
+    .btn{margin-top:12px;width:100%;padding:13px 14px;border:none;border-radius:14px;background:linear-gradient(90deg,#16a34a,#22c55e);color:#04110a;font-weight:800}
+    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}.sval{font-size:24px;font-weight:800}.green{color:var(--green)} .blue{color:var(--blue)} .yellow{color:var(--yellow)} .red{color:var(--red)}
+    nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:10px 12px;background:linear-gradient(180deg,transparent,rgba(11,18,32,.95) 25%)}
+    .tabs{width:min(480px,100%);display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:rgba(18,26,43,.96);border:1px solid var(--line);border-radius:18px;padding:8px}
+    .tab{padding:10px 6px;border-radius:12px;text-align:center;font-size:12px;color:var(--muted)} .tab.active{background:#0d1526;color:var(--text)}
+    .install{background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.25);color:var(--blue);padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.4}
+    .banner{background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);color:var(--yellow);padding:12px 14px;border-radius:16px;font-size:13px;line-height:1.4;margin-bottom:14px}
+    .empty{color:var(--muted);font-size:14px;text-align:center;padding:18px}
+    .status{padding:4px 9px;border-radius:999px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .s-won{background:rgba(34,197,94,.14);color:var(--green);border:1px solid rgba(34,197,94,.3)}
+    .s-lost{background:rgba(239,68,68,.14);color:var(--red);border:1px solid rgba(239,68,68,.3)}
+    .s-pending{background:rgba(147,164,191,.14);color:var(--muted);border:1px solid rgba(147,164,191,.3)}
+    .s-push{background:rgba(56,189,248,.14);color:var(--blue);border:1px solid rgba(56,189,248,.3)}
+    .combo details{margin-top:10px}
+    .combo summary{cursor:pointer;color:var(--blue);font-size:12px;list-style:none}
+    .combo summary::-webkit-details-marker{display:none}
+    .legs{margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+    .leg{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;border-bottom:1px dashed var(--line)}
+    .leg:last-child{border-bottom:none}
+    .leg .lmeta{font-size:12px;color:var(--muted)}
+    .leg .lsel{font-size:13px;font-weight:600}
+    .badge-type{font-size:10px;padding:3px 8px;border-radius:999px;background:#0d1526;border:1px solid var(--line);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="top">
+        <div class="logo"><div class="mark">B</div><div><h1>BetBot Pro</h1><div class="sub" id="subHead">Phone app • installs to home screen</div></div></div>
+        <div class="pill" id="statusPill">LIVE</div>
+      </div>
+    </header>
+    <main>
+      <div class="banner" id="banner" style="display:none"></div>
+      <section class="hero">
+        <div class="bank">Current bankroll</div>
+        <div class="amt" id="bankroll">—</div>
+        <div class="meta">
+          <div class="chip">ROI <span class="green" id="heroRoi">—</span></div>
+          <div class="chip">Win% <span class="blue" id="heroWin">—</span></div>
+          <div class="chip">CLV <span class="yellow" id="heroClv">—</span></div>
+        </div>
+      </section>
+      <section class="section">
+        <h2 class="title">Install</h2>
+        <div class="install" id="installHelp">iPhone: Safari → Share → Add to Home Screen. Android: Chrome → menu → Install app/Add to Home screen.</div>
+      </section>
+      <section class="section" id="singlesSection">
+        <h2 class="title">Singles</h2>
+        <div id="picks"><div class="empty">Loading picks…</div></div>
+      </section>
+      <section class="section" id="combosSection" style="display:none">
+        <h2 class="title">Combinations</h2>
+        <div id="combos"></div>
+      </section>
+      <section class="section">
+        <h2 class="title">Performance</h2>
+        <div class="stats">
+          <div class="stat"><div class="tiny">Flat ROI</div><div class="sval green" id="pRoi">—</div></div>
+          <div class="stat"><div class="tiny">Win rate</div><div class="sval blue" id="pWin">—</div></div>
+          <div class="stat"><div class="tiny">Settled bets</div><div class="sval" id="pSettled">—</div></div>
+          <div class="stat"><div class="tiny">Avg CLV</div><div class="sval yellow" id="pClv">—</div></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <nav><div class="tabs"><div class="tab active">Picks</div><div class="tab">Stats</div><div class="tab">History</div><div class="tab">Settings</div></div></nav>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js');
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const box = document.getElementById('installHelp');
+      box.innerHTML = 'Android install ready. Tap here to install the app.';
+      box.style.cursor = 'pointer';
+      box.onclick = async () => { if (!deferredPrompt) return; deferredPrompt.prompt(); deferredPrompt = null; };
+    });
+
+    // ── Live data wiring ─────────────────────────────────────────────
+    const $ = (id) => document.getElementById(id);
+    const money = (n) => (typeof n === 'number')
+      ? '$' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : '—';
+    const pct = (n) => (typeof n === 'number') ? (n >= 0 ? '+' : '') + n.toFixed(1) + '%' : '—';
+    const signed = (n) => (typeof n === 'number') ? (n >= 0 ? '+' : '') + n.toFixed(1) : '—';
+    const asProb = (n) => {
+      if (typeof n !== 'number') return '—';
+      const v = n <= 1 ? n * 100 : n;
+      return v.toFixed(1) + '%';
+    };
+    const fmtOdds = (o) => {
+      if (typeof o !== 'number') return o || '—';
+      return (o > 0 ? '+' : '') + o;
+    };
+
+    function showBanner(msg) {
+      const b = $('banner');
+      b.textContent = msg;
+      b.style.display = 'block';
+    }
+
+    const STATUS_CLASS = { won: 's-won', lost: 's-lost', push: 's-push', pending: 's-pending' };
+    function statusBadge(status) {
+      const s = (status || 'pending').toLowerCase();
+      const cls = STATUS_CLASS[s] || 's-pending';
+      return `<span class="status ${cls}">${s}</span>`;
+    }
+    function escapeHtml(s) {
+      return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+
+    function renderPerformance(perf) {
+      perf = perf || {};
+      $('pRoi').textContent  = (typeof perf.roi === 'number') ? pct(perf.roi) : '—';
+      $('pWin').textContent  = (typeof perf.win_rate === 'number') ? perf.win_rate.toFixed(1) + '%' : '—';
+      $('pSettled').textContent = (typeof perf.settled_bets === 'number') ? String(perf.settled_bets) : '—';
+      $('pClv').textContent  = (typeof perf.avg_clv === 'number') ? signed(perf.avg_clv) : '—';
+      $('heroRoi').textContent = (typeof perf.roi === 'number') ? pct(perf.roi) : '—';
+      $('heroWin').textContent = (typeof perf.win_rate === 'number') ? perf.win_rate.toFixed(1) + '%' : '—';
+      $('heroClv').textContent = (typeof perf.avg_clv === 'number') ? signed(perf.avg_clv) : '—';
+    }
+
+    function renderPicks(picks) {
+      const wrap = $('picks');
+      wrap.innerHTML = '';
+      if (!Array.isArray(picks) || picks.length === 0) {
+        wrap.innerHTML = '<div class="empty">No +EV picks for today.</div>';
+        return;
+      }
+      for (const p of picks) {
+        const edgeClass = p.tier === 'high' ? 'e-high' : p.tier === 'low' ? 'e-low' : 'e-med';
+        const match = `${p.away_team ?? '?'} @ ${p.home_team ?? '?'}`;
+        const venue = p.venue || [p.away_pitcher, p.home_pitcher].filter(Boolean).join(' vs ') || '';
+        const betLabel = [p.bet_team, p.bet_side].filter(Boolean).join(' ');
+        const odds = `${fmtOdds(p.best_odds)}${p.best_book ? ' ' + p.best_book : ''}`;
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class="row">
+            <div><div class="match">${match}</div><div class="tiny">${venue}</div></div>
+            <div class="edge ${edgeClass}">${pct(p.edge_pct)} edge</div>
+          </div>
+          <div class="row" style="margin-top:8px;align-items:center">
+            <span class="badge-type">${escapeHtml(p.bet_type || 'moneyline')}</span>
+            ${statusBadge(p.status)}
+          </div>
+          <div class="grid">
+            <div class="mini"><div class="lab">Bet</div><div class="val">${betLabel || '—'}</div></div>
+            <div class="mini"><div class="lab">Odds</div><div class="val">${odds}</div></div>
+            <div class="mini"><div class="lab">Model</div><div class="val">${asProb(p.model_prob)}</div></div>
+            <div class="mini"><div class="lab">Kelly</div><div class="val">${money(p.kelly_bet)}</div></div>
+          </div>
+          <button class="btn">Log Bet</button>`;
+        wrap.appendChild(card);
+      }
+    }
+
+    function renderCombos(combos) {
+      const section = $('combosSection');
+      const wrap = $('combos');
+      wrap.innerHTML = '';
+      if (!Array.isArray(combos) || combos.length === 0) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      for (const c of combos) {
+        const legs = Array.isArray(c.legs) ? c.legs : [];
+        const legRows = legs.map((leg) => `
+          <div class="leg">
+            <div>
+              <div class="lsel">${escapeHtml(leg.selection || '—')}${leg.teased_line != null ? ' (' + leg.teased_line + ')' : (leg.line != null ? ' (' + leg.line + ')' : '')}</div>
+              <div class="lmeta">${escapeHtml(leg.league || '')} · ${escapeHtml(leg.market || '')} · ${fmtOdds(leg.odds)}${typeof leg.edge === 'number' ? ' · ' + pct(leg.edge * 100) + ' edge' : ''}</div>
+            </div>
+            ${statusBadge(leg.status)}
+          </div>`).join('');
+        const card = document.createElement('div');
+        card.className = 'card combo';
+        card.innerHTML = `
+          <div class="row">
+            <div><div class="match">${escapeHtml((c.bet_type || 'parlay').toUpperCase())} · ${c.num_legs || legs.length} legs</div>
+            <div class="tiny">${fmtOdds(c.odds)}${c.teaser_points ? ' · +' + c.teaser_points + ' pts' : ''}${typeof c.edge === 'number' ? ' · ' + pct(c.edge * 100) + ' edge' : ''}</div></div>
+            ${statusBadge(c.status)}
+          </div>
+          <details open>
+            <summary>Legs (${legs.length}) — each tracked individually</summary>
+            <div class="legs">${legRows}</div>
+          </details>
+          <button class="btn">Log Bet</button>`;
+        wrap.appendChild(card);
+      }
+    }
+
+    function renderDemo(message) {
+      $('statusPill').textContent = 'DEMO';
+      $('statusPill').style.background = 'rgba(245,158,11,.12)';
+      $('statusPill').style.color = '#f59e0b';
+      $('statusPill').style.borderColor = 'rgba(245,158,11,.25)';
+      showBanner(message);
+      $('bankroll').textContent = '—';
+      $('picks').innerHTML = '<div class="empty">No picks available yet.</div>';
+      $('combosSection').style.display = 'none';
+      renderPerformance({});
+    }
+
+    async function load() {
+      try {
+        const res = await fetch('../data/picks.json', { cache: 'no-store' });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
+        if (!data || data.status === 'no_data') {
+          renderDemo(data && data.reason ? data.reason : 'No picks yet — demo mode.');
+          return;
+        }
+        $('statusPill').textContent = 'LIVE';
+        if (data.date_display) $('subHead').textContent = `${data.sport || ''} • ${data.date_display}`.trim().replace(/^• /, '');
+        $('bankroll').textContent = money(data.bankroll);
+        renderPerformance(data.performance);
+        // Bet-type mode controls which sections show. "combined" hides Singles.
+        const mode = data.bet_type_mode || 'both';
+        $('singlesSection').style.display = (mode === 'combined') ? 'none' : 'block';
+        renderPicks(data.picks);
+        renderCombos(data.combinations);
+      } catch (err) {
+        renderDemo('No picks yet — demo mode. (' + err.message + ')');
+      }
+    }
+    load();
+    // Live sync: re-fetch picks.json so single-game picks AND individual
+    // parlay/teaser leg statuses refresh in near real time.
+    setInterval(load, 60000);
+  </script>
+</body>
+</html>

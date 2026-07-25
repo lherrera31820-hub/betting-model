@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://lherrera31820-hub.github.io/Betbot-/schemas/picks/v1.1.0/schema.json",
+  "title": "Betbot Picks Output v1.1.0",
+  "description": "Phase 1 schema plus optional Phase 2 SOS/common-opponent/recency fields. Backward compatible with v1.0.0.",
+  "type": "object",
+  "required": [
+    "schema_id", "schema_version", "generated_at", "run_id", "phase",
+    "sports", "summary", "filters", "picks"
+  ],
+  "properties": {
+    "schema_id": { "type": "string", "format": "uri" },
+    "schema_version": { "type": "string", "const": "1.1.0" },
+    "generated_at": { "type": "string", "format": "date-time" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "phase": { "type": "string", "enum": ["phase1", "phase2"] },
+    "sports": {
+      "type": "array", "minItems": 1, "uniqueItems": true,
+      "items": { "type": "string", "enum": ["NFL", "NBA", "NCAAF"] }
+    },
+    "summary": { "$ref": "#/$defs/summary" },
+    "filters": { "$ref": "#/$defs/filters" },
+    "picks": { "type": "array", "items": { "$ref": "#/$defs/pick" } }
+  },
+  "$defs": {
+    "summary": {
+      "type": "object",
+      "required": ["total_picks", "game_bets", "player_props", "avg_edge_pct"],
+      "properties": {
+        "total_picks": { "type": "integer", "minimum": 0 },
+        "game_bets": { "type": "integer", "minimum": 0 },
+        "player_props": { "type": "integer", "minimum": 0 },
+        "avg_edge_pct": { "type": "number" },
+        "top_sport": { "type": ["string", "null"] }
+      }
+    },
+    "filters": {
+      "type": "object",
+      "required": ["sports", "bet_types", "market_types", "sportsbooks", "confidence_tiers"],
+      "properties": {
+        "sports": { "type": "array", "items": { "type": "string" } },
+        "bet_types": { "type": "array", "items": { "type": "string", "enum": ["game", "player_prop"] } },
+        "market_types": { "type": "array", "items": { "type": "string" } },
+        "sportsbooks": { "type": "array", "items": { "type": "string" } },
+        "confidence_tiers": { "type": "array", "items": { "type": "string", "enum": ["A", "B", "C"] } }
+      }
+    },
+    "pick": {
+      "type": "object",
+      "required": [
+        "pick_id", "sport", "event_id", "event_start", "bet_type", "market_type",
+        "selection", "sportsbook", "odds_american", "implied_prob", "model_prob",
+        "edge_pct", "confidence_tier", "recommended_stake_units", "status"
+      ],
+      "properties": {
+        "pick_id": { "type": "string" },
+        "sport": { "type": "string", "enum": ["NFL", "NBA", "NCAAF"] },
+        "event_id": { "type": "string" },
+        "event_start": { "type": "string", "format": "date-time" },
+        "home_team": { "type": ["string", "null"] },
+        "away_team": { "type": ["string", "null"] },
+        "bet_type": { "type": "string", "enum": ["game", "player_prop"] },
+        "market_type": { "type": "string" },
+        "selection": { "type": "string" },
+        "side": { "type": ["string", "null"], "enum": ["over", "under", "home", "away", null] },
+        "line": { "type": ["number", "null"] },
+        "player_name": { "type": ["string", "null"] },
+        "player_team": { "type": ["string", "null"] },
+        "sportsbook": { "type": "string" },
+        "odds_american": { "type": "integer" },
+        "implied_prob": { "type": "number", "minimum": 0, "maximum": 1 },
+        "model_prob": { "type": "number", "minimum": 0, "maximum": 1 },
+        "edge_pct": { "type": "number" },
+        "confidence_tier": { "type": "string", "enum": ["A", "B", "C"] },
+        "recommended_stake_units": { "type": "number", "minimum": 0 },
+        "status": { "type": "string", "enum": ["open", "closed", "settled", "void"] },
+
+        "sos_raw": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "sos_second_order": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "win_pct_adjusted": { "type": ["number", "null"] },
+        "common_opponents_score": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "recent_form_weighted": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "model_prob_final": { "type": ["number", "null"], "minimum": 0, "maximum": 1 }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "bet_type": { "const": "player_prop" } } },
+          "then": { "required": ["player_name", "player_team", "line"] }
+        }
+      ]
+    }
+  }
+}
