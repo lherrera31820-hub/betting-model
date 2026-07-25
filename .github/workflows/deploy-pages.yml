@@ -1,0 +1,93 @@
+name: Deploy to GitHub Pages
+
+# Publishes the betting-model dashboard (app/index.html + app/dashboard/index.html)
+# to GitHub Pages, together with the data/picks.json feed it depends on.
+#
+# Only the public-facing app/ and data/ directories are published — backend
+# code, model artifacts (models/, *.pkl, training_data.csv, ingest/, engine/,
+# grading/, db/) are intentionally left out of the Pages artifact even though
+# this repo itself is public, to avoid needlessly serving large binary/data
+# files as static site assets.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "data/picks.json"
+      - ".github/workflows/deploy-pages.yml"
+  workflow_dispatch: {}
+
+# Permissions required for the Pages deployment via OIDC.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never run two Pages deployments at once; let in-flight deploys finish.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build static site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Flatten app/ to the site root so the dashboard behaves the same way
+      # it did when it lived at the repo root in Betbot-, and copy the
+      # data/picks.json feed alongside it (app/index.html fetches it via a
+      # relative '../data/picks.json' path in the source tree, so we rewrite
+      # that single reference to './data/picks.json' for the flattened site).
+      - name: Prepare artifact directory
+        run: |
+          set -euo pipefail
+          rm -rf _site
+          mkdir -p _site/dashboard _site/data
+
+          cp -f app/index.html _site/index.html
+          cp -f app/icon-192.png app/icon-512.png app/manifest.webmanifest app/service-worker.js _site/
+          cp -f app/dashboard/index.html _site/dashboard/index.html
+          cp -f data/picks.json _site/data/picks.json
+
+          # Rewrite the relative picks.json fetch path for the flattened layout.
+          sed -i "s#fetch('../data/picks.json'#fetch('./data/picks.json'#" _site/index.html
+
+          echo "Published files:"
+          find _site -maxdepth 2 -type f | sort
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Write run summary
+        if: always()
+        run: |
+          {
+            echo "## GitHub Pages Deployment"
+            echo ""
+            echo "- **Status:** ${{ job.status }}"
+            echo "- **Live URL:** ${{ steps.deployment.outputs.page_url }}"
+            echo "- **Dashboard:** ${{ steps.deployment.outputs.page_url }}dashboard/"
+            echo "- **Commit:** \`${{ github.sha }}\`"
+            echo "- **Triggered by:** ${{ github.event_name }}"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,158 @@
+name: Monitor Pages Deployment
+
+# Self-healing monitor for the "Deploy to GitHub Pages" pipeline.
+#
+# Two triggers:
+#   1. workflow_run (completed) — reacts immediately whenever the deploy workflow
+#      finishes. On failure it opens/updates a `pages-alert` issue; on success it
+#      closes any open alert.
+#   2. schedule (every 30 min) — safety net that catches the cases the first
+#      trigger can't see: the deploy workflow failing to trigger at all, or a
+#      GitHub Pages configuration/enablement problem.
+
+on:
+  workflow_run:
+    workflows: ["Deploy to GitHub Pages"]
+    types: [completed]
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+  pages: read
+
+env:
+  ALERT_LABEL: pages-alert
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure alert label exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create "$ALERT_LABEL" \
+            --repo "$GITHUB_REPOSITORY" \
+            --color B60205 \
+            --description "Automated GitHub Pages deployment alerts" \
+            2>/dev/null || echo "Label '$ALERT_LABEL' already exists."
+
+      # ---------------------------------------------------------------------
+      # React to a completed deploy run.
+      # ---------------------------------------------------------------------
+      - name: Handle deploy workflow_run result
+        if: ${{ github.event_name == 'workflow_run' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_URL: ${{ github.event.workflow_run.html_url }}
+          RUN_SHA: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+        run: |
+          set -euo pipefail
+          TS="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          TITLE="[pages-alert] GitHub Pages deployment failed"
+
+          # Find an already-open alert issue (if any).
+          EXISTING="$(gh issue list --repo "$GITHUB_REPOSITORY" \
+            --state open --label "$ALERT_LABEL" \
+            --json number --jq '.[0].number // empty')"
+
+          if [ "$CONCLUSION" != "success" ]; then
+            BODY="$(printf '%s\n' \
+              "Automated alert: the **Deploy to GitHub Pages** workflow did not succeed." \
+              "" \
+              "- **Conclusion:** \`${CONCLUSION}\`" \
+              "- **Run logs:** ${RUN_URL}" \
+              "- **Commit:** \`${RUN_SHA}\`" \
+              "- **Detected at:** ${TS}" \
+              "" \
+              "The site may be stale until this is resolved. This issue will auto-close once a subsequent deployment succeeds.")"
+            if [ -n "$EXISTING" ]; then
+              echo "Updating existing alert issue #$EXISTING"
+              gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+            else
+              echo "Opening new alert issue"
+              gh issue create --repo "$GITHUB_REPOSITORY" \
+                --title "$TITLE" --label "$ALERT_LABEL" --body "$BODY"
+            fi
+          else
+            echo "Deploy succeeded."
+            if [ -n "$EXISTING" ]; then
+              echo "Closing recovered alert issue #$EXISTING"
+              gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" \
+                --body "Recovery confirmed: a deployment succeeded at ${TS} (commit \`${RUN_SHA}\`, run ${RUN_URL}). Closing alert."
+              gh issue close "$EXISTING" --repo "$GITHUB_REPOSITORY" \
+                --reason completed
+            fi
+          fi
+
+      # ---------------------------------------------------------------------
+      # Scheduled safety-net check.
+      # ---------------------------------------------------------------------
+      - name: Scheduled health check
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TS="$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          TITLE="[pages-alert] GitHub Pages pipeline health check failed"
+          PROBLEMS=""
+
+          # 1. Is Pages enabled / configured?
+          if ! PAGES_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/pages" 2>/dev/null)"; then
+            PROBLEMS="${PROBLEMS}- GitHub Pages is **not enabled/configured** for this repo. Run \`scripts/configure-pages-environment.sh\`.\n"
+            PAGES_URL=""
+          else
+            PAGES_URL="$(echo "$PAGES_JSON" | jq -r '.html_url // empty')"
+          fi
+
+          # 2. Inspect the latest deploy run.
+          RUNS_JSON="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/deploy-pages.yml/runs?per_page=1" 2>/dev/null || echo '{}')"
+          TOTAL="$(echo "$RUNS_JSON" | jq -r '.total_count // 0')"
+
+          if [ "$TOTAL" = "0" ]; then
+            # No runs at all — check whether main has recent commits that should have triggered one.
+            LAST_COMMIT="$(gh api "repos/${GITHUB_REPOSITORY}/commits?sha=main&per_page=1" --jq '.[0].sha // empty' 2>/dev/null || true)"
+            if [ -n "$LAST_COMMIT" ]; then
+              PROBLEMS="${PROBLEMS}- No deploy runs exist despite commits on \`main\` (latest \`${LAST_COMMIT}\`). The workflow may not be triggering.\n"
+            fi
+          else
+            STATUS="$(echo "$RUNS_JSON" | jq -r '.workflow_runs[0].status')"
+            CONCLUSION="$(echo "$RUNS_JSON" | jq -r '.workflow_runs[0].conclusion // "null"')"
+            RUN_URL="$(echo "$RUNS_JSON" | jq -r '.workflow_runs[0].html_url')"
+            RUN_SHA="$(echo "$RUNS_JSON" | jq -r '.workflow_runs[0].head_sha')"
+            if [ "$STATUS" = "completed" ] && [ "$CONCLUSION" != "success" ]; then
+              PROBLEMS="${PROBLEMS}- Latest deploy run concluded \`${CONCLUSION}\` (commit \`${RUN_SHA}\`, logs ${RUN_URL}).\n"
+            fi
+          fi
+
+          EXISTING="$(gh issue list --repo "$GITHUB_REPOSITORY" \
+            --state open --label "$ALERT_LABEL" \
+            --json number --jq '.[0].number // empty')"
+
+          if [ -n "$PROBLEMS" ]; then
+            BODY="$(printf 'Scheduled health check detected problems with the GitHub Pages pipeline at %s:\n\n%b\nLive URL (if any): %s\n' "$TS" "$PROBLEMS" "${PAGES_URL:-unknown}")"
+            if [ -n "$EXISTING" ]; then
+              echo "Updating existing alert issue #$EXISTING"
+              gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" --body "$BODY"
+            else
+              echo "Opening new alert issue"
+              gh issue create --repo "$GITHUB_REPOSITORY" \
+                --title "$TITLE" --label "$ALERT_LABEL" --body "$BODY"
+            fi
+            exit 1
+          else
+            echo "Health check passed at $TS."
+            if [ -n "$EXISTING" ]; then
+              gh issue comment "$EXISTING" --repo "$GITHUB_REPOSITORY" \
+                --body "Scheduled health check passed at ${TS}. Pipeline healthy — closing alert."
+              gh issue close "$EXISTING" --repo "$GITHUB_REPOSITORY" --reason completed
+            fi
+          fi

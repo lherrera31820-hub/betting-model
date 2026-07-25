@@ -40,22 +40,44 @@ files on their next run in this repo.
 
 ## Still pending (Phase 3–5 — not done automatically)
 
-1. **Repo secrets.** `betting-model` currently has zero repo secrets configured.
-   `DATABASE_URL`, `SPORTSDATAIO_API_KEY`, and `ODDS_API_KEY` all need to be
-   added (`gh secret set NAME -R lherrera31820-hub/betting-model`) before
-   either workflow will actually run successfully. Run
-   `audit_workflow_secrets.py` against this repo to re-check at any time.
-2. **Pages hosting decision.** `Betbot-` still owns the live GitHub Pages
-   deployment (`deploy-pages.yml` + `monitor-pages.yml`), and those were
-   intentionally **not** moved here yet. `generate-picks.yml` in this repo
-   only commits a new `data/picks.json` to `betting-model` — it does not
-   publish anything publicly. Decide one of:
-   - Keep `Betbot-` as the Pages front-end and have it pull `picks.json`
-     from `betting-model` (needs a cross-repo token secret), or
-   - Move `deploy-pages.yml`/`monitor-pages.yml` here too and retire
-     `Betbot-` Pages once this repo's dashboard is verified working
-     end-to-end (this repo is currently **private**, so Pages would need
-     to be made public or use a paid Pages plan).
+1. **Repo secrets — still open.** `betting-model` currently has zero repo
+   secrets configured. `DATABASE_URL`, `SPORTSDATAIO_API_KEY`, and
+   `ODDS_API_KEY` all need to be added before either workflow will actually
+   run successfully. This can't be done on the user's behalf (secret values
+   are never readable, even from Betbot-'s existing ones) — run these
+   yourself:
+   ```bash
+   gh secret set DATABASE_URL -R lherrera31820-hub/betting-model
+   gh secret set SPORTSDATAIO_API_KEY -R lherrera31820-hub/betting-model
+   gh secret set ODDS_API_KEY -R lherrera31820-hub/betting-model
+   ```
+   Run `audit_workflow_secrets.py` against this repo to re-check at any time.
+2. **Pages hosting decision — RESOLVED (2026-07-25).** Chose to move hosting
+   into `betting-model` and retire `Betbot-`'s Pages site. What changed:
+   - `betting-model` was switched from **private to public** (required for
+     free-tier Pages).
+   - `deploy-pages.yml` and `monitor-pages.yml` were copied here from
+     `Betbot-` and adapted: the build step now flattens `app/index.html` +
+     `app/dashboard/index.html` + icons/manifest/service-worker to the site
+     root and copies `data/picks.json` alongside them (backend code —
+     `models/`, `ingest/`, `engine/`, `grading/`, `db/`, `*.pkl`,
+     `training_data.csv` — is intentionally excluded from the published
+     Pages artifact even though the repo itself is public).
+   - `deploy-pages.yml` now triggers on pushes to `app/**` or
+     `data/picks.json`, so `generate-picks.yml`'s daily commit to
+     `data/picks.json` automatically triggers a redeploy — no cross-repo
+     token needed.
+   - `app/dashboard/index.html`'s hardcoded `OWNER`/`REPO` and issue/repo
+     links were repointed from `Betbot-` to `betting-model`.
+   - `scripts/configure-pages-environment.sh` was copied over; run it once
+     to enable Pages with `build_type=workflow` on this repo:
+     ```bash
+     ./scripts/configure-pages-environment.sh lherrera31820-hub betting-model
+     ```
+   - `Betbot-` was left untouched (its own `deploy-pages.yml` will keep
+     running against its own stale `picks.json` until it's retired per
+     item 5 below — consider disabling it once this repo's site is verified
+     live).
 3. **Standardize prediction schema across sports.** The plan's Phase 3 calls
    for one canonical prediction schema shared by every sport model and one
    canonical event-ID scheme for grading. Only the MLB model exists today
