@@ -1,17 +1,6 @@
 {
-  "status": "ok",
-  "schema_version": "1.0.0",
-  "generated_at": "2026-08-15T13:26:07Z",
-  "date_display": "2026-08-15",
+  "status": "no_data",
+  "reason": "no NFL games scheduled for 2026-08-16 (likely off-season)",
   "sport": "NFL",
-  "bankroll": 1000.0,
-  "performance": {
-    "roi": 0.0,
-    "win_rate": 0.0,
-    "settled_bets": 0,
-    "avg_clv": 0.0
-  },
-  "bet_type_mode": "both",
-  "picks": [],
-  "combinations": []
+  "generated_at": "2026-08-16T13:26:29Z"
 }
