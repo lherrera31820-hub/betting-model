@@ -1,0 +1,252 @@
+{
+  "slate_id": "fixture-2026-09-18",
+  "as_of": "2026-09-18T15:00:00-05:00",
+  "generated_at": "2026-09-18T15:00:00-05:00",
+  "fixture": true,
+  "daily_cap_u": 5.0,
+  "note": "Synthetic desk fixtures for gate/math tests. Not live odds. Not for staking. Numbers are labeled fixture stamps so tests never invent live books.",
+  "games": [
+    {
+      "game_id": "cfb-aub-ala",
+      "sport": "CFB",
+      "home": "ALA",
+      "away": "AUB",
+      "kickoff": "2026-09-19T15:30:00-05:00",
+      "packet": {"sit": "QB healthy; no key inactives", "sp": true, "wx": "dome"},
+      "tickets": [
+        {
+          "id": "cfb-aub-ala:SPREAD:AUB",
+          "market": "SPREAD",
+          "side": "AUB",
+          "is_home": false,
+          "american": 110,
+          "line": 7.0,
+          "price_source": "shop",
+          "proposed_units": 1.0,
+          "prices": {
+            "open": {"american": 105, "line": 7.0, "book": "FIXTURE-Open", "ts": "2026-09-15T10:00:00Z", "market": "SPREAD"},
+            "best": {"american": 110, "line": 7.0, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "SPREAD"},
+            "close": null
+          },
+          "model": {"model_pct": 58.0, "edge": 3.2, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-hou-sea",
+      "sport": "MLB",
+      "home": "SEA",
+      "away": "HOU",
+      "kickoff": "2026-09-18T21:10:00-05:00",
+      "packet": {"sit": "both SPs confirmed", "sp": "Valdez / Castillo confirmed", "wx": "roof closed", "pa_ok": true},
+      "tickets": [
+        {
+          "id": "mlb-hou-sea:ML:HOU",
+          "market": "ML",
+          "side": "HOU",
+          "is_home": false,
+          "american": 127,
+          "american_opp": -147,
+          "price_source": "shop",
+          "prices": {
+            "open": {"american": 120, "book": "FIXTURE-Open", "ts": "2026-09-17T18:00:00Z", "market": "ML"},
+            "best": {"american": 127, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:30:00Z", "market": "ML"},
+            "close": null
+          },
+          "model": {"model_pct": 54.0, "edge": 7.05, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "cfb-syr-unlv",
+      "sport": "CFB",
+      "home": "SYR",
+      "away": "UNLV",
+      "kickoff": "2026-09-19T12:00:00-05:00",
+      "packet": {"sit": "home WR1 probable", "sp": true, "wx": "clear"},
+      "tickets": [
+        {
+          "id": "cfb-syr-unlv:SPREAD:SYR",
+          "market": "SPREAD",
+          "side": "SYR",
+          "is_home": true,
+          "american": -115,
+          "line": -3.5,
+          "price_source": "shop",
+          "prices": {
+            "open": {"american": -110, "line": -3.0, "book": "FIXTURE-Open", "ts": "2026-09-16T12:00:00Z", "market": "SPREAD"},
+            "best": {"american": -115, "line": -3.5, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "SPREAD"},
+            "close": null
+          },
+          "model": {"model_pct": 61.0, "edge": 1.8, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-atl-nym",
+      "sport": "MLB",
+      "home": "NYM",
+      "away": "ATL",
+      "kickoff": "2026-09-18T19:10:00-05:00",
+      "packet": {"sit": "lineups posted", "sp": "Sale confirmed; PA ok", "wx": "clear", "pa_ok": true},
+      "tickets": [
+        {
+          "id": "mlb-atl-nym:ML:ATL",
+          "market": "ML",
+          "side": "ATL",
+          "is_home": false,
+          "american": 140,
+          "american_opp": -160,
+          "price_source": "shop",
+          "prices": {
+            "open": {"american": 135, "book": "FIXTURE-Open", "ts": "2026-09-17T16:00:00Z", "market": "ML"},
+            "best": {"american": 140, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "ML"},
+            "close": null
+          },
+          "model": {"model_pct": 68.0, "edge": 9.2, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-sea-f5",
+      "sport": "MLB",
+      "home": "SEA",
+      "away": "TEX",
+      "kickoff": "2026-09-18T21:10:00-05:00",
+      "packet": {"sit": "SP confirmed", "sp": "Castillo confirmed", "wx": "roof closed", "pa_ok": true},
+      "tickets": [
+        {
+          "id": "mlb-sea-f5:F5:SEA",
+          "market": "F5",
+          "side": "SEA",
+          "is_home": true,
+          "american": -225,
+          "f5_market_stamped": true,
+          "price_source": "shop",
+          "prices": {
+            "best": {"american": -225, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "F5"}
+          },
+          "model": {"model_pct": 72.0, "edge": 4.0, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-mia-opener",
+      "sport": "MLB",
+      "home": "MIA",
+      "away": "PHI",
+      "kickoff": "2026-09-18T18:40:00-05:00",
+      "packet": {"sit": "SP listed", "sp": "Perez listed", "wx": "clear", "pa_ok": true},
+      "tickets": [
+        {
+          "id": "mlb-mia-opener:ML:MIA",
+          "market": "ML",
+          "side": "MIA",
+          "is_home": true,
+          "american": 118,
+          "price_source": "opener",
+          "prices": {
+            "open": {"american": 118, "book": "FIXTURE-Open", "ts": "2026-09-17T08:00:00Z", "market": "ML"},
+            "best": {"american": 118, "book": "FIXTURE-Open", "ts": "2026-09-17T08:00:00Z", "market": "ML"}
+          },
+          "model": {"model_pct": 66.0, "edge": 8.5, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "nfl-kc-buf",
+      "sport": "NFL",
+      "home": "KC",
+      "away": "BUF",
+      "kickoff": "2026-09-20T16:25:00-05:00",
+      "game_day": false,
+      "packet": {"sit": "no inactives yet; midweek sit ok", "sp": true, "wx": "clear"},
+      "tickets": [
+        {
+          "id": "nfl-kc-buf:SPREAD:BUF",
+          "market": "SPREAD",
+          "side": "BUF",
+          "is_home": false,
+          "american": 105,
+          "line": 3.5,
+          "price_source": "shop",
+          "prices": {
+            "open": {"american": 100, "line": 3.0, "book": "FIXTURE-Open", "ts": "2026-09-16T18:00:00Z", "market": "SPREAD"},
+            "best": {"american": 105, "line": 3.5, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "SPREAD"}
+          },
+          "model": {"model_pct": 55.0, "edge": 2.4, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-no-model",
+      "sport": "MLB",
+      "home": "NYY",
+      "away": "BOS",
+      "kickoff": "2026-09-18T19:05:00-05:00",
+      "packet": {"sit": "lineups pending", "sp": false, "wx": null},
+      "tickets": [
+        {
+          "id": "mlb-no-model:ML:NYY",
+          "market": "ML",
+          "side": "NYY",
+          "is_home": true,
+          "american": -150,
+          "price_source": "shop",
+          "prices": {
+            "best": {"american": -150, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "ML"}
+          }
+        }
+      ]
+    },
+    {
+      "game_id": "soccer-ars-che",
+      "sport": "EPL",
+      "home": "ARS",
+      "away": "CHE",
+      "kickoff": "2026-09-19T10:00:00-05:00",
+      "packet": {"sit": "n/a", "sp": true, "wx": "n/a"},
+      "tickets": [
+        {
+          "id": "soccer-ars-che:ML:ARS",
+          "market": "ML",
+          "side": "ARS",
+          "is_home": true,
+          "american": -140,
+          "price_source": "shop",
+          "prices": {
+            "best": {"american": -140, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "ML"}
+          },
+          "model": {"model_pct": 62.0, "edge": 5.0, "source": "provided", "model_version": "fixture.sim"}
+        }
+      ]
+    },
+    {
+      "game_id": "mlb-computed-lambda",
+      "sport": "MLB",
+      "home": "CHC",
+      "away": "MIL",
+      "kickoff": "2026-09-18T19:20:00-05:00",
+      "packet": {"sit": "both SPs confirmed", "sp": "fixture λ only — Savant hook idle", "wx": "wind 8 out", "pa_ok": true},
+      "tickets": [
+        {
+          "id": "mlb-computed-lambda:ML:CHC",
+          "market": "ML",
+          "side": "CHC",
+          "is_home": true,
+          "american": -120,
+          "american_opp": 100,
+          "price_source": "shop",
+          "prices": {
+            "best": {"american": -120, "book": "FIXTURE-Shop", "ts": "2026-09-18T14:00:00Z", "market": "ML"}
+          },
+          "model_inputs": {
+            "lam_home": 4.8,
+            "lam_away": 4.1,
+            "family": "poisson"
+          }
+        }
+      ]
+    }
+  ]
+}

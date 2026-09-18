@@ -1,0 +1,665 @@
+{
+  "schema_version": "prediction_core.candidates.v1",
+  "slate_id": "fixture-2026-09-18",
+  "as_of": "2026-09-18T15:00:00-05:00",
+  "generated_at": "2026-09-18T15:00:00-05:00",
+  "writer": "Main",
+  "scoreboard": "side_pass_fail",
+  "clv_policy": "internal_promote_kill",
+  "note": "Candidates only. Main is sole CLEAR writer. Luis scores side pass/fail first; CLV is internal for promote/kill. Never invent MODEL%/lines/injuries/stats. Soccer OFF.",
+  "fixture": true,
+  "sports_in_scope": [
+    "MLB",
+    "NFL",
+    "CFB"
+  ],
+  "soccer": "off",
+  "daily": {
+    "cap_u": 5.0,
+    "clear_u": 4.0,
+    "clear_n": 4
+  },
+  "summary": {
+    "CLEAR": 4,
+    "FILL": 3,
+    "HOLD": 3
+  },
+  "candidates": [
+    {
+      "id": "cfb-aub-ala:SPREAD:AUB",
+      "game_id": "cfb-aub-ala",
+      "sport": "CFB",
+      "home": "ALA",
+      "away": "AUB",
+      "kickoff": "2026-09-19T15:30:00-05:00",
+      "market": "SPREAD",
+      "side": "AUB",
+      "is_home": false,
+      "american": 110.0,
+      "line": 7.0,
+      "price_source": "shop",
+      "model_pct": 58.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 3.2,
+      "edge_unit": "spread_pts",
+      "status": "CLEAR",
+      "units": 1.0,
+      "reject_codes": [],
+      "reasons": [
+        "passed locked CLEAR bars \u2014 candidate for Main (sole writer)"
+      ],
+      "prices": {
+        "open": {
+          "american": 105.0,
+          "line": 7.0,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-15T10:00:00Z",
+          "market": "SPREAD"
+        },
+        "best": {
+          "american": 110.0,
+          "line": 7.0,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "SPREAD"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": 110.0,
+        "shop_line": 7.0
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "QB healthy; no key inactives",
+        "sp": true,
+        "wx": "dome",
+        "pa_ok": null
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-hou-sea:ML:HOU",
+      "game_id": "mlb-hou-sea",
+      "sport": "MLB",
+      "home": "SEA",
+      "away": "HOU",
+      "kickoff": "2026-09-18T21:10:00-05:00",
+      "market": "ML",
+      "side": "HOU",
+      "is_home": false,
+      "american": 127.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": 54.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 7.05,
+      "edge_unit": "prob_pts",
+      "status": "FILL",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_MLB_PLUS_ML_SOFT"
+      ],
+      "reasons": [
+        "+ML needs model\u226565 AND edge\u22658 (got model=54 edge=7.05)"
+      ],
+      "prices": {
+        "open": {
+          "american": 120.0,
+          "line": null,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-17T18:00:00Z",
+          "market": "ML"
+        },
+        "best": {
+          "american": 127.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:30:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": 127.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "both SPs confirmed",
+        "sp": "Valdez / Castillo confirmed",
+        "wx": "roof closed",
+        "pa_ok": true
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "cfb-syr-unlv:SPREAD:SYR",
+      "game_id": "cfb-syr-unlv",
+      "sport": "CFB",
+      "home": "SYR",
+      "away": "UNLV",
+      "kickoff": "2026-09-19T12:00:00-05:00",
+      "market": "SPREAD",
+      "side": "SYR",
+      "is_home": true,
+      "american": -115.0,
+      "line": -3.5,
+      "price_source": "shop",
+      "model_pct": 61.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 1.8,
+      "edge_unit": "spread_pts",
+      "status": "HOLD",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_CFB_FAV_BAR"
+      ],
+      "reasons": [
+        "CFB home/G6 favorite needs edge\u22655 pts AND model\u226570 (got model=61 edge=1.8)"
+      ],
+      "prices": {
+        "open": {
+          "american": -110.0,
+          "line": -3.0,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-16T12:00:00Z",
+          "market": "SPREAD"
+        },
+        "best": {
+          "american": -115.0,
+          "line": -3.5,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "SPREAD"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": -115.0,
+        "shop_line": -3.5
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "home WR1 probable",
+        "sp": true,
+        "wx": "clear",
+        "pa_ok": null
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-atl-nym:ML:ATL",
+      "game_id": "mlb-atl-nym",
+      "sport": "MLB",
+      "home": "NYM",
+      "away": "ATL",
+      "kickoff": "2026-09-18T19:10:00-05:00",
+      "market": "ML",
+      "side": "ATL",
+      "is_home": false,
+      "american": 140.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": 68.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 9.2,
+      "edge_unit": "prob_pts",
+      "status": "CLEAR",
+      "units": 1.0,
+      "reject_codes": [],
+      "reasons": [
+        "passed locked CLEAR bars \u2014 candidate for Main (sole writer)"
+      ],
+      "prices": {
+        "open": {
+          "american": 135.0,
+          "line": null,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-17T16:00:00Z",
+          "market": "ML"
+        },
+        "best": {
+          "american": 140.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": 140.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "lineups posted",
+        "sp": "Sale confirmed; PA ok",
+        "wx": "clear",
+        "pa_ok": true
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-sea-f5:F5:SEA",
+      "game_id": "mlb-sea-f5",
+      "sport": "MLB",
+      "home": "SEA",
+      "away": "TEX",
+      "kickoff": "2026-09-18T21:10:00-05:00",
+      "market": "F5",
+      "side": "SEA",
+      "is_home": true,
+      "american": -225.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": 72.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 4.0,
+      "edge_unit": "prob_pts",
+      "status": "FILL",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_F5_JUICE",
+        "REJECT_HIGH_MODEL_NOT_CLEAR"
+      ],
+      "reasons": [
+        "F5 American \u2264 -200 needs model\u226575 + real F5 market (got model=72)",
+        "high_model\u226570 not CLEAR \u2014 shadow/reject tag"
+      ],
+      "prices": {
+        "open": null,
+        "best": {
+          "american": -225.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "F5"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": -225.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "SP confirmed",
+        "sp": "Castillo confirmed",
+        "wx": "roof closed",
+        "pa_ok": true
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-mia-opener:ML:MIA",
+      "game_id": "mlb-mia-opener",
+      "sport": "MLB",
+      "home": "MIA",
+      "away": "PHI",
+      "kickoff": "2026-09-18T18:40:00-05:00",
+      "market": "ML",
+      "side": "MIA",
+      "is_home": true,
+      "american": 118.0,
+      "line": null,
+      "price_source": "opener",
+      "model_pct": 66.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 8.5,
+      "edge_unit": "prob_pts",
+      "status": "FILL",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_OPENER_PRIM"
+      ],
+      "reasons": [
+        "opener/PRIM auto reject"
+      ],
+      "prices": {
+        "open": {
+          "american": 118.0,
+          "line": null,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-17T08:00:00Z",
+          "market": "ML"
+        },
+        "best": {
+          "american": 118.0,
+          "line": null,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-17T08:00:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": 118.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "SP listed",
+        "sp": "Perez listed",
+        "wx": "clear",
+        "pa_ok": true
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "nfl-kc-buf:SPREAD:BUF",
+      "game_id": "nfl-kc-buf",
+      "sport": "NFL",
+      "home": "KC",
+      "away": "BUF",
+      "kickoff": "2026-09-20T16:25:00-05:00",
+      "market": "SPREAD",
+      "side": "BUF",
+      "is_home": false,
+      "american": 105.0,
+      "line": 3.5,
+      "price_source": "shop",
+      "model_pct": 55.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 2.4,
+      "edge_unit": "spread_pts",
+      "status": "CLEAR",
+      "units": 1.0,
+      "reject_codes": [],
+      "reasons": [
+        "passed locked CLEAR bars \u2014 candidate for Main (sole writer)"
+      ],
+      "prices": {
+        "open": {
+          "american": 100.0,
+          "line": 3.0,
+          "book": "FIXTURE-Open",
+          "ts": "2026-09-16T18:00:00Z",
+          "market": "SPREAD"
+        },
+        "best": {
+          "american": 105.0,
+          "line": 3.5,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "SPREAD"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": 105.0,
+        "shop_line": 3.5
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "no inactives yet; midweek sit ok",
+        "sp": true,
+        "wx": "clear",
+        "pa_ok": null
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-no-model:ML:NYY",
+      "game_id": "mlb-no-model",
+      "sport": "MLB",
+      "home": "NYY",
+      "away": "BOS",
+      "kickoff": "2026-09-18T19:05:00-05:00",
+      "market": "ML",
+      "side": "NYY",
+      "is_home": true,
+      "american": -150.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": null,
+      "model_source": null,
+      "model_version": null,
+      "model_notes": [
+        "no model stamp and no model_inputs"
+      ],
+      "edge": null,
+      "edge_unit": "prob_pts",
+      "status": "HOLD",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_NO_MODEL"
+      ],
+      "reasons": [
+        "no MODEL% stamped; will not invent"
+      ],
+      "prices": {
+        "open": null,
+        "best": {
+          "american": -150.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": -150.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "lineups pending",
+        "sp": false,
+        "wx": null,
+        "pa_ok": null
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "soccer-ars-che:ML:ARS",
+      "game_id": "soccer-ars-che",
+      "sport": "EPL",
+      "home": "ARS",
+      "away": "CHE",
+      "kickoff": "2026-09-19T10:00:00-05:00",
+      "market": "ML",
+      "side": "ARS",
+      "is_home": true,
+      "american": -140.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": 62.0,
+      "model_source": "provided",
+      "model_version": "fixture.sim",
+      "model_notes": [
+        "stamped MODEL% + edge (Sim/Core) \u2014 not invented"
+      ],
+      "edge": 5.0,
+      "edge_unit": "prob_pts",
+      "status": "HOLD",
+      "units": 0.0,
+      "reject_codes": [
+        "REJECT_SOCCER_OFF"
+      ],
+      "reasons": [
+        "soccer OFF for this rebuild"
+      ],
+      "prices": {
+        "open": null,
+        "best": {
+          "american": -140.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": -140.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "n/a",
+        "sp": true,
+        "wx": "n/a",
+        "pa_ok": null
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {}
+    },
+    {
+      "id": "mlb-computed-lambda:ML:CHC",
+      "game_id": "mlb-computed-lambda",
+      "sport": "MLB",
+      "home": "CHC",
+      "away": "MIL",
+      "kickoff": "2026-09-18T19:20:00-05:00",
+      "market": "ML",
+      "side": "CHC",
+      "is_home": true,
+      "american": -120.0,
+      "line": null,
+      "price_source": "shop",
+      "model_pct": 59.1514,
+      "model_source": "computed",
+      "model_version": "prediction_core.mlb.v1",
+      "model_notes": [
+        "lambda provided directly",
+        "family=poisson",
+        "no Elo prior (hook idle)"
+      ],
+      "edge": 6.9775,
+      "edge_unit": "prob_pts",
+      "status": "CLEAR",
+      "units": 1.0,
+      "reject_codes": [],
+      "reasons": [
+        "passed locked CLEAR bars \u2014 candidate for Main (sole writer)"
+      ],
+      "prices": {
+        "open": null,
+        "best": {
+          "american": -120.0,
+          "line": null,
+          "book": "FIXTURE-Shop",
+          "ts": "2026-09-18T14:00:00Z",
+          "market": "ML"
+        },
+        "close": null,
+        "intended_close_book": null,
+        "shop_price": -120.0,
+        "shop_line": null
+      },
+      "clv": {
+        "clv_pct": null,
+        "clv_prob_pts": null,
+        "beat_close": null,
+        "label": "UNAVAILABLE",
+        "method": "decimal_ratio",
+        "note": "internal promote/kill \u2014 Luis scoreboard is side pass/fail"
+      },
+      "packet": {
+        "sit": "both SPs confirmed",
+        "sp": "fixture \u03bb only \u2014 Savant hook idle",
+        "wx": "wind 8 out",
+        "pa_ok": true
+      },
+      "as_of": "2026-09-18T15:00:00-05:00",
+      "extras": {
+        "lam_home": 4.8,
+        "lam_away": 4.1,
+        "family": "poisson"
+      }
+    }
+  ]
+}
