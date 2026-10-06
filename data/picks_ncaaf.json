@@ -1,6 +1,31 @@
 {
-  "status": "no_data",
-  "reason": "no NCAAF games scheduled for 2026-10-05 (likely off-season)",
+  "status": "ok",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-10-06T18:44:11Z",
+  "date_display": "2026-10-06",
   "sport": "NCAAF",
-  "generated_at": "2026-10-05T21:00:49Z"
+  "bankroll": 1000.0,
+  "performance": {
+    "roi": 0.0,
+    "win_rate": 0.0,
+    "settled_bets": 0,
+    "avg_clv": 0.0
+  },
+  "bet_type_mode": "both",
+  "picks": [
+    {
+      "bet_id": "",
+      "bet_category": "single",
+      "bet_type": "moneyline",
+      "game_id": null,
+      "league": null,
+      "selection": null,
+      "line": null,
+      "odds": null,
+      "model_prob": 40.8,
+      "edge": null,
+      "status": "pending"
+    }
+  ],
+  "combinations": []
 }
