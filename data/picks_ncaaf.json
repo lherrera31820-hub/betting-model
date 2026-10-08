@@ -1,8 +1,8 @@
 {
   "status": "ok",
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-07T19:10:25Z",
-  "date_display": "2026-10-07",
+  "generated_at": "2026-10-08T19:06:29Z",
+  "date_display": "2026-10-08",
   "sport": "NCAAF",
   "bankroll": 1000.0,
   "performance": {
@@ -22,7 +22,7 @@
       "selection": null,
       "line": null,
       "odds": null,
-      "model_prob": 59.2,
+      "model_prob": 40.8,
       "edge": null,
       "status": "pending"
     },
@@ -36,6 +36,19 @@
       "line": null,
       "odds": null,
       "model_prob": 40.8,
+      "edge": null,
+      "status": "pending"
+    },
+    {
+      "bet_id": "",
+      "bet_category": "single",
+      "bet_type": "moneyline",
+      "game_id": null,
+      "league": null,
+      "selection": null,
+      "line": null,
+      "odds": null,
+      "model_prob": 59.2,
       "edge": null,
       "status": "pending"
     }
