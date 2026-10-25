@@ -1,6 +1,17 @@
 {
-  "status": "no_data",
-  "reason": "no NFL games scheduled for 2026-10-24 (likely off-season)",
+  "status": "ok",
+  "schema_version": "1.0.0",
+  "generated_at": "2026-10-25T16:56:18Z",
+  "date_display": "2026-10-25",
   "sport": "NFL",
-  "generated_at": "2026-10-24T16:24:18Z"
+  "bankroll": 1000.0,
+  "performance": {
+    "roi": 0.0,
+    "win_rate": 0.0,
+    "settled_bets": 0,
+    "avg_clv": 0.0
+  },
+  "bet_type_mode": "both",
+  "picks": [],
+  "combinations": []
 }
