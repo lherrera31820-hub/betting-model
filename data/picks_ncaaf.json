@@ -1,8 +1,8 @@
 {
   "status": "ok",
   "schema_version": "1.0.0",
-  "generated_at": "2026-10-28T18:36:54Z",
-  "date_display": "2026-10-28",
+  "generated_at": "2026-10-29T18:45:42Z",
+  "date_display": "2026-10-29",
   "sport": "NCAAF",
   "bankroll": 1000.0,
   "performance": {
@@ -22,7 +22,7 @@
       "selection": null,
       "line": null,
       "odds": null,
-      "model_prob": 59.2,
+      "model_prob": 40.8,
       "edge": null,
       "status": "pending"
     },
@@ -35,7 +35,7 @@
       "selection": null,
       "line": null,
       "odds": null,
-      "model_prob": 59.2,
+      "model_prob": 40.8,
       "edge": null,
       "status": "pending"
     }
